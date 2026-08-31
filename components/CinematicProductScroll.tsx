@@ -5,7 +5,6 @@ import Image from "next/image"
 import { ArrowDown, Eye } from "lucide-react"
 import { animate, stagger } from "animejs"
 import Link from "next/link"
-import { GooeyText } from "./animations/GoeyMorphText"
 import KineticGrid from "./backgrounds/KineticGrid"
 
 import Bed from '../public/bed.jpeg'

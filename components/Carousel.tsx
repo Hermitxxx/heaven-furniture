@@ -181,25 +181,6 @@ export const defaultOffers: Offer[] = [
         ],
     },
     {
-        id: "velvet-accent-chair",
-        category: "seating",
-        imageSrc: "https://images.unsplash.com/photo-1580481072645-022f9a6d8310?auto=format&fit=crop&q=80&w=1200",
-        imageAlt: "Emerald Velvet Accent Chair",
-        title: "Emerald Velvet Accent Chair",
-        tag: "Living Room · Seating",
-        description: "Rich emerald velvet upholstery combined with a sculpted matte black steel frame for modern contrast.",
-        brandLogoSrc: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100",
-        brandName: "Nordic Craft Studio",
-        promoCode: "VELVET12",
-        href: "#",
-        meta: [
-            { label: "Material", value: "Cotton Velvet, Steel" },
-            { label: "Dimensions", value: "72 × 78 × 82 cm" },
-            { label: "Price", value: "$890" },
-            { label: "Lead time", value: "3–4 weeks" },
-        ],
-    },
-    {
         id: "minimalist-oak-desk",
         category: "tables",
         imageSrc: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&q=80&w=1200",
@@ -295,7 +276,7 @@ export const FilterDisclosure: React.FC<{
     const [active, setActive] = React.useState(defaultActiveId);
 
     const activeItem = items.find((i) => i.id === active);
-    const ActiveIcon = activeItem ? activeItem.icon : BiCategory;
+    const ActiveIcon = activeItem ? activeItem.icon : BiCategoryAlt;
 
     const handleSelect = (id: string) => {
         setActive(id);
