@@ -48,8 +48,8 @@ export function ZoomInScroll({
             <span className="text-blue-600 font-black">BESPOKE INTERACTION</span>.
         </>
     ),
-    videoSrc = 'https://res.cloudinary.com/dsuwzuaxp/video/upload/cinematic_drone_videos_shew9q.mp4',
-    posterSrc = 'https://res.cloudinary.com/dsuwzuaxp/video/upload/cinematic_drone_videos_shew9q.jpg',
+    videoSrc = 'https://res.cloudinary.com/jvbg08pb/video/upload/v1788206167/cinematic.mp4',
+    posterSrc = '',
     className = '',
 }: LipScrollZoominAnimationProps) {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -199,7 +199,7 @@ export function ZoomInScroll({
                                 }}
                             >
                                 <source src={videoSrc} type="video/mp4" />
-                                <source src="https://res.cloudinary.com/dsuwzuaxp/video/upload/856381-hd_1920_1080_30fps_gsq11b.mp4" type="video/mp4" />
+                                <source src="https://res.cloudinary.com/jvbg08pb/video/upload/v1788206167/cinematic.mp4" type="video/mp4" />
                             </video>
                         </div>
                     </div>
