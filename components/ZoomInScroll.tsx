@@ -163,7 +163,7 @@ export function ZoomInScroll({
                     {/* Subtle Ambient Background Watermark */}
                     <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none z-0">
                         <span className="text-[20vw] font-black uppercase tracking-tighter text-black">
-                            LOREM
+                            HEAVEN FURNITURE
                         </span>
                     </div>
 
