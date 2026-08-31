@@ -351,7 +351,7 @@ export const FilterDisclosure: React.FC<{
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 style={{ borderRadius: 28 }}
-                                className="z-20 flex h-[52px] w-[52px] cursor-pointer items-center justify-center border border-zinc-200 bg-white shadow-sm hover:bg-zinc-50 dark:border-neutral-800 dark:bg-neutral-900"
+                                className="z-9999 flex h-[52px] w-[52px] cursor-pointer items-center justify-center border border-zinc-200 bg-white shadow-sm hover:bg-zinc-50 dark:border-neutral-800 dark:bg-neutral-900"
                             >
                                 <PiFunnelSimpleBold className="h-[24px] w-[24px] text-zinc-900 dark:text-neutral-100" />
                             </motion.button>
