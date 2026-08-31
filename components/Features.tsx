@@ -7,6 +7,8 @@ import Bespoke from '../public/bespoke.jpeg'
 import Heritage from '../public/heritage.jpeg'
 import Comfort from '../public/comfort.jpg'
 import Fabrics from '../public/fabrics.jpg'
+import Consult from '../public/consultation.jpg'
+import Trust from '../public/trust.jpg'
 
 interface MenuItem {
     num: string;
@@ -24,9 +26,9 @@ const getImageSrc = (image: string | StaticImageData) =>
 const defaultItems: MenuItem[] = [
     {
         num: "01",
-        name: "HERITAGE CRAFT",
-        clipId: "clip-arches",
-        image: Heritage
+        name: "FREE CONSULTATION",
+        clipId: "clip-mosaic",
+        image: Consult
     },
     {
         num: "02",
@@ -36,16 +38,16 @@ const defaultItems: MenuItem[] = [
     },
     {
         num: "03",
-        name: "ERGONOMIC COMFORT",
+        name: "PREMIUM MATERIALS",
         clipId: "clip-pixels",
-        image: Comfort
+        image: Heritage
     },
     {
         num: "04",
-        name: "PREMIUM FABRICS",
+        name: "PROVEN TRUST",
         clipId: "clip-circles",
-        image: Fabrics
-    },
+        image: Trust
+    }
 ];
 
 export const Features = ({
@@ -111,11 +113,14 @@ export const Features = ({
         createLoop(index);
     };
 
+
+    //bg-[#f7f5f1]
+
     return (
         <section
             ref={containerRef}
             className={cn(
-                "relative w-full overflow-hidden border-t border-black/5 bg-[#f7f5f1] text-zinc-900 transition-colors duration-500",
+                "relative w-full overflow-hidden border-t border-black/5 text-zinc-900 transition-colors duration-500",
                 className
             )}
         >
@@ -170,11 +175,15 @@ export const Features = ({
 
                         <svg viewBox="0 0 500 500" className="relative z-10 h-auto w-full max-w-[500px] drop-shadow-[0_30px_60px_rgba(0,0,0,0.08)]">
                             <defs>
-                                {/* Replaces the old burger-shaped "clip-original" with three arch/column shapes */}
-                                <clipPath id="clip-arches">
-                                    <rect className="path" x="40" y="60" width="110" height="380" rx="55" />
-                                    <rect className="path" x="195" y="60" width="110" height="380" rx="55" />
-                                    <rect className="path" x="350" y="60" width="110" height="380" rx="55" />
+                                {/* Bento mosaic for item 1 — same rounded-rectangle tessellation
+                                    approach as clip-hexagons, just a different block arrangement */}
+                                <clipPath id="clip-mosaic">
+                                    <rect className="path" x="20" y="20" width="240" height="180" rx="12" />
+                                    <rect className="path" x="280" y="20" width="200" height="340" rx="12" />
+                                    <rect className="path" x="20" y="220" width="110" height="260" rx="12" />
+                                    <rect className="path" x="150" y="220" width="110" height="130" rx="12" />
+                                    <rect className="path" x="150" y="370" width="110" height="110" rx="12" />
+                                    <rect className="path" x="280" y="380" width="200" height="100" rx="12" />
                                 </clipPath>
 
                                 <clipPath id="clip-hexagons">
