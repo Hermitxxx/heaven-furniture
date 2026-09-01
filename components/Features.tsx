@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import gsap from "gsap";
-import type { StaticImageData } from "next/image";
+import { getImageProps, type StaticImageData } from "next/image";
 import Bespoke from '../public/bespoke.jpeg'
 import Heritage from '../public/heritage.jpeg'
 import Comfort from '../public/comfort.jpg'
@@ -18,10 +18,24 @@ interface MenuItem {
 }
 
 // Next.js static imports resolve to StaticImageData objects (with .src, .width,
-// .height), not plain strings. The SVG <image> href and gsap's setAttribute
-// both need a plain string, so unwrap `.src` wherever the image is consumed.
+// .height), not plain strings. The SVG <image> href and gsap's setAttribute both
+// need a plain URL, but handing them `.src` pointed straight at the original file
+// — the optimizer never saw it, so hovering this list pulled down several
+// megabytes of untouched JPEG. getImageProps is the supported way to get an
+// optimized URL for a consumer that isn't an <img>: it returns the same
+// candidates <Image> would have generated, and `props.src` is the largest.
+//
+// 500 matches both the SVG viewBox and the max-w-[500px] cap on the <svg> below,
+// so the request is sized to how the image actually renders.
+const MASK_SIZE = 500;
+
 const getImageSrc = (image: string | StaticImageData) =>
-    typeof image === "string" ? image : image.src;
+    getImageProps({
+        src: image,
+        alt: "",
+        width: MASK_SIZE,
+        height: MASK_SIZE,
+    }).props.src;
 
 const defaultItems: MenuItem[] = [
     {
@@ -130,7 +144,7 @@ export const Features = ({
                     <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-zinc-500">
                         Why we exist
                     </p>
-                    <h2 className="mt-4 text-4xl font-black uppercase tracking-[-0.06em] text-zinc-950 md:text-7xl">
+                    <h2 className="mt-4 text-4xl font-black uppercase tracking-normal text-zinc-950 md:text-7xl">
                         Why choose us
                     </h2>
                 </div>

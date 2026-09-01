@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
+    "@gsap/react": "2.1.2",
+    "@hugeicons/core-free-icons": "^4.3.0",
+    "@hugeicons/react": "^1.1.10",
     "animejs": "^4.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

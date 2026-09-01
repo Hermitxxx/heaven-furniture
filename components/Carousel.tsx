@@ -62,7 +62,7 @@ export const defaultOffers: Offer[] = [
         meta: [
             { label: "Material", value: "Solid oak, wool blend" },
             { label: "Dimensions", value: "76 × 82 × 74 cm" },
-            { label: "Price", value: "$1,240" },
+            { label: "Price", value: "৳52,000" },
             { label: "Lead time", value: "4–6 weeks" },
         ],
     },
@@ -81,7 +81,7 @@ export const defaultOffers: Offer[] = [
         meta: [
             { label: "Material", value: "Bouclé, hardwood frame" },
             { label: "Dimensions", value: "210 × 95 × 78 cm" },
-            { label: "Price", value: "$2,890" },
+            { label: "Price", value: "৳98,000" },
             { label: "Lead time", value: "8–10 weeks" },
         ],
     },
@@ -100,7 +100,7 @@ export const defaultOffers: Offer[] = [
         meta: [
             { label: "Material", value: "Rattan, beechwood" },
             { label: "Dimensions", value: "52 × 58 × 80 cm" },
-            { label: "Price", value: "$340" },
+            { label: "Price", value: "৳14,500" },
             { label: "Lead time", value: "2–3 weeks" },
         ],
     },
@@ -119,7 +119,7 @@ export const defaultOffers: Offer[] = [
         meta: [
             { label: "Material", value: "Walnut, blackened steel" },
             { label: "Dimensions", value: "120 × 60 × 40 cm" },
-            { label: "Price", value: "$980" },
+            { label: "Price", value: "৳38,000" },
             { label: "Lead time", value: "5–7 weeks" },
         ],
     },
@@ -138,7 +138,7 @@ export const defaultOffers: Offer[] = [
         meta: [
             { label: "Material", value: "Linen, solid pine slats" },
             { label: "Dimensions", value: "Queen · 170 × 210 cm" },
-            { label: "Price", value: "$1,560" },
+            { label: "Price", value: "৳62,000" },
             { label: "Lead time", value: "6–8 weeks" },
         ],
     },
@@ -157,7 +157,7 @@ export const defaultOffers: Offer[] = [
         meta: [
             { label: "Material", value: "Stoneware, linen shade" },
             { label: "Dimensions", value: "28 × 28 × 48 cm" },
-            { label: "Price", value: "$210" },
+            { label: "Price", value: "৳8,900" },
             { label: "Lead time", value: "1–2 weeks" },
         ],
     },
@@ -176,7 +176,7 @@ export const defaultOffers: Offer[] = [
         meta: [
             { label: "Material", value: "Carrara Marble, Brass" },
             { label: "Dimensions", value: "220 × 100 × 75 cm" },
-            { label: "Price", value: "$3,400" },
+            { label: "Price", value: "৳96,000" },
             { label: "Lead time", value: "6–8 weeks" },
         ],
     },
@@ -195,7 +195,7 @@ export const defaultOffers: Offer[] = [
         meta: [
             { label: "Material", value: "White Oak" },
             { label: "Dimensions", value: "140 × 65 × 74 cm" },
-            { label: "Price", value: "$1,150" },
+            { label: "Price", value: "৳46,000" },
             { label: "Lead time", value: "4–5 weeks" },
         ],
     },
@@ -214,7 +214,7 @@ export const defaultOffers: Offer[] = [
         meta: [
             { label: "Material", value: "Aniline Leather, Pine" },
             { label: "Dimensions", value: "130 × 45 × 42 cm" },
-            { label: "Price", value: "$680" },
+            { label: "Price", value: "৳26,500" },
             { label: "Lead time", value: "2–4 weeks" },
         ],
     },
@@ -233,7 +233,7 @@ export const defaultOffers: Offer[] = [
         meta: [
             { label: "Material", value: "Opal Glass, Brass" },
             { label: "Dimensions", value: "35 × 40 × 160 cm" },
-            { label: "Price", value: "$450" },
+            { label: "Price", value: "৳18,000" },
             { label: "Lead time", value: "1–2 weeks" },
         ],
     },
@@ -252,7 +252,7 @@ export const defaultOffers: Offer[] = [
         meta: [
             { label: "Material", value: "Natural Travertine" },
             { label: "Dimensions", value: "40 × 40 × 50 cm" },
-            { label: "Price", value: "$520" },
+            { label: "Price", value: "৳21,500" },
             { label: "Lead time", value: "2–3 weeks" },
         ],
     },

@@ -22,9 +22,9 @@ const MOCK_PRODUCTS = [
         collection: {
             title: "Heaven Furniture"
         },
-        price: "$899.00",
+        price: "৳48,000",
         colors: ["#E1D8CE", "#1E1E1E", "#3A4F41"],
-        sizes: ["Queen", "King", "Cal King"]
+        sizes: ["Double", "Queen", "King"]
     },
     {
         id: "prod_2",
@@ -35,7 +35,7 @@ const MOCK_PRODUCTS = [
         collection: {
             title: "Heaven Furniture"
         },
-        price: "$1,149.00",
+        price: "৳72,000",
         colors: ["#E1D8CE", "#1E1E1E", "#C2B280"],
         sizes: ["2-Seater", "3-Seater"]
     },
@@ -48,7 +48,7 @@ const MOCK_PRODUCTS = [
         collection: {
             title: "Heaven Furniture"
         },
-        price: "$649.00",
+        price: "৳35,000",
         colors: ["#D7C4B7", "#1E1E1E", "#E6E6E6"],
         sizes: ["Standard"]
     }
@@ -150,7 +150,7 @@ function MinimalProductCard({ product }: { product: typeof MOCK_PRODUCTS[0] }) {
             {/* Typography Section */}
             <div className="flex flex-col items-center justify-center text-center p-3 sm:p-6 md:p-8 bg-transparent relative z-20">
                 <span className="text-[8px] sm:text-[9px] text-muted-foreground uppercase tracking-[0.4em] mb-1 sm:mb-3 font-light">
-                    {product.collection?.title ?? "CLOSET STUDIO"}
+                    {product.collection?.title ?? "HEAVEN FURNITURE"}
                 </span>
 
                 <h4 className="text-xs sm:text-sm md:text-base uppercase font-normal text-foreground mb-2 sm:mb-4 w-full line-clamp-2 transition-colors duration-500 tracking-widest">
@@ -385,9 +385,9 @@ function ProductHero({ product, reversed = false, id }: { product: typeof MOCK_P
 // 4. Main Unified Mock Component
 export function CinematicProductScroll() {
     const finalTitle = "HEAVEN FURNITURE"
-    const finalSubtitle = "EST. 2024"
+    const finalSubtitle = "EST. 2020"
     const finalDescription = "We design a timeless lifestyle beyond crafting. Where minimalism meets luxury."
-    const finalButtonText = "View Collection"
+    const finalButtonText = ""
 
 
     const containerRef = useRef<HTMLDivElement>(null)
@@ -523,7 +523,7 @@ export function CinematicProductScroll() {
                         </div>
                         <div className="overflow-hidden mt-2 w-full flex justify-center">
                             <span
-                                className="block italic font-light text-muted-foreground reveal text-center"
+                                className="block italic font-bold text-muted-foreground reveal text-center"
                                 style={{ animationDelay: "0.6s" }}
                             >
                                 {mainTitleRest}
@@ -533,7 +533,7 @@ export function CinematicProductScroll() {
 
                     <div className="mt-6 md:mt-12 overflow-hidden w-full flex justify-center">
                         <p
-                            className="text-muted-foreground text-center text-lg md:text-base max-w-lg font-light leading-relaxed tracking-wide reveal"
+                            className="text-muted-foreground text-center text-lg md:text-base max-w-lg font-bold leading-relaxed tracking-wide reveal"
                             style={{ animationDelay: "0.8s" }}
                         >
                             {finalDescription}

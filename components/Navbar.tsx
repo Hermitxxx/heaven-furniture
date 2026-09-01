@@ -21,7 +21,7 @@ interface NavBarProps {
 // Every entry must correspond to an element that actually renders an `id`:
 //   #home        → KineticGrid hero            (CinematicProductScroll)
 //   #pieces      → first ProductHero           (CinematicProductScroll)
-//   #about       → "Why choose us"             (Features)
+//   #about       → "Why choose us" story panels (WhyChooseUs / StoryScroll)
 //   #collections → "Featured Collections"      (Carousel)
 // Listed in the order they should read in the pill, not document order — the
 // scroll spy below doesn't depend on the array being sorted.

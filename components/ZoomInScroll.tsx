@@ -3,9 +3,9 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Features } from './Features'; // ← adjust to wherever Features actually lives
 import { Carousel } from './Carousel';
-
+import { TestimonialsSection } from './TestimonialsSection';
+import FurnitureStoryScroll from './StoryScroll';
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
 }
@@ -213,8 +213,15 @@ export function ZoomInScroll({
 
     return (
         <div className={`w-full bg-white text-black selection:bg-blue-600 selection:text-white ${className}`}>
-            {/* 1. INTRO — feature grid */}
-            <Features />
+            {/* 1. INTRO — the "why choose us" story panels. The #about anchor
+                lives on this wrapper rather than inside: the navbar's scroll spy
+                looks the id up by getElementById, and StoryScroll's panels are
+                pinned and rotated, so measuring one of them directly would give
+                the navbar a moving target. */}
+            <div id="about">
+                {/* <WhyChooseUs /> */}
+                <FurnitureStoryScroll></FurnitureStoryScroll>
+            </div>
 
             {/* 2. PINNED SOFA-MASK VIDEO REVEAL */}
             <div
@@ -278,6 +285,9 @@ export function ZoomInScroll({
             <div id="collections">
                 <Carousel />
             </div>
+
+            {/* 4. Social proof, directly after the collections. */}
+            <TestimonialsSection />
 
             <style
                 dangerouslySetInnerHTML={{

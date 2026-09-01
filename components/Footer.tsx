@@ -4,7 +4,7 @@ import * as React from "react";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { CalendarDays, MapPin } from "lucide-react";
+import { MapPin, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLenis } from "@/components/SmoothScrollProvider";
 
@@ -23,6 +23,15 @@ if (typeof window !== "undefined") {
 // white, which made the aurora a grey smudge and gave the glass pills white
 // shadows on a white background.
 const CLAY = "#8a6f59";
+
+// Real company details. E.164 for the tel: href (no spaces or dashes, so
+// dialers don't choke), the spaced form for display.
+const PHONE_E164 = "+8801960481983";
+const PHONE_DISPLAY = "+880 1960-481983";
+const EMAIL = "heavenfurnituremart@gmail.com";
+const ADDRESS = "Agrabad Access Road, Chattogram, Bangladesh";
+const MAPS_URL =
+  "https://www.google.com/maps/search/?api=1&query=Agrabad+Access+Road%2C+Chattogram%2C+Bangladesh";
 
 const STYLES = `
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
@@ -350,14 +359,17 @@ export function CinematicFooter() {
 
             {/* Interactive Magnetic Pills Layout */}
             <div ref={linksRef} className="flex flex-col items-center gap-6 w-full">
-              {/* Primary calls to action */}
+              {/* Primary calls to action. The phone number is on the button
+                  rather than behind a label — a call is how a consultation
+                  actually gets booked, and there's no booking form to send
+                  anyone to on a single-page site. */}
               <div className="flex flex-wrap justify-center gap-4 w-full">
-                <MagneticButton as="a" href="#" className="footer-glass-pill px-10 py-5 rounded-full text-zinc-950 font-bold text-sm md:text-base flex items-center gap-3 group">
-                  <CalendarDays className="w-5 h-5 text-[#8a6f59] transition-colors group-hover:text-zinc-950" />
-                  Book a consultation
+                <MagneticButton as="a" href={`tel:${PHONE_E164}`} className="footer-glass-pill px-10 py-5 rounded-full text-zinc-950 font-bold text-sm md:text-base flex items-center gap-3 group">
+                  <Phone className="w-5 h-5 text-[#8a6f59] transition-colors group-hover:text-zinc-950" />
+                  Call {PHONE_DISPLAY}
                 </MagneticButton>
 
-                <MagneticButton as="a" href="#" className="footer-glass-pill px-10 py-5 rounded-full text-zinc-950 font-bold text-sm md:text-base flex items-center gap-3 group">
+                <MagneticButton as="a" href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="footer-glass-pill px-10 py-5 rounded-full text-zinc-950 font-bold text-sm md:text-base flex items-center gap-3 group">
                   <MapPin className="w-5 h-5 text-[#8a6f59] transition-colors group-hover:text-zinc-950" />
                   Visit the showroom
                 </MagneticButton>
@@ -375,6 +387,26 @@ export function CinematicFooter() {
                   Privacy Policy
                 </MagneticButton>
               </div>
+
+              {/* Address and email in plain text. Nothing else on the page
+                  states where the showroom actually is, and on a landing page
+                  that's the detail a local visitor is looking for. */}
+              <address className="mt-6 flex flex-col items-center gap-2 not-italic text-xs md:text-sm text-zinc-500 md:flex-row md:gap-3">
+                <a
+                  href={MAPS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-zinc-950"
+                >
+                  {ADDRESS}
+                </a>
+                <span aria-hidden="true" className="hidden text-[#8a6f59]/60 md:inline">
+                  ✦
+                </span>
+                <a href={`mailto:${EMAIL}`} className="transition-colors hover:text-zinc-950">
+                  {EMAIL}
+                </a>
+              </address>
             </div>
           </div>
 
@@ -391,7 +423,7 @@ export function CinematicFooter() {
               <span className="text-zinc-500 text-[10px] md:text-xs font-bold uppercase tracking-widest">Crafted with</span>
               <span className="animate-footer-heartbeat text-sm md:text-base text-[#8a6f59]">❤</span>
               <span className="text-zinc-500 text-[10px] md:text-xs font-bold uppercase tracking-widest">since</span>
-              <span className="text-zinc-950 font-black text-xs md:text-sm tracking-normal ml-1">2024</span>
+              <span className="text-zinc-950 font-black text-xs md:text-sm tracking-normal ml-1">2020</span>
             </div>
 
             {/* Back to top */}
