@@ -268,15 +268,15 @@ export default function FurnitureStoryScroll() {
             No padding of its own either — flow-art-container already insets by
             4vw, and paying it twice was costing the gallery ~100px of height.
 
-            min-h-[120vh] is what makes this chapter taller than a screen. It has
-            to live here rather than on the FlowSection: the section's height is
-            driven by this subtree, so raising the section's own min-height would
-            just leave dead cream below the callout. Safe because this is the
-            last FlowSection and FlowArt only pins sections before the last —
-            a taller panel here simply scrolls. Raised to 132vh alongside the
-            bigger heading and the gap below it, so pushing the gallery down
-            doesn't claw back the height gained in the previous pass. */}
-        <div className="flex min-h-[132vh] flex-1 flex-col justify-between w-full">
+            justify-center rather than justify-between, and no fixed panel
+            height. Those two were the imbalance: a 132vh panel holding a frame
+            capped at 1000px leaves free space on any tall viewport, and
+            space-between dumps every pixel of it into the two interior gaps —
+            so the heading sat flush against the top padding while a few hundred
+            pixels of nothing opened under the gallery. The panel is now as tall
+            as its contents, gap spaces the interior evenly, and pt gives the
+            heading air the 4vw container padding alone didn't. */}
+        <div className="flex flex-1 flex-col justify-center gap-8 w-full pt-6 md:gap-12 md:pt-10">
           {/* Header Section */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-black/10 pb-5">
             <div>
@@ -298,19 +298,21 @@ export default function FurnitureStoryScroll() {
             </p>
           </div>
 
-          {/* 3D Gallery Canvas. flex-1 hands the gallery the height left over
-              between the header and the callout; mt drops it clear of the
-              heading now that the panel is tall enough to afford the gap. No
-              min-h-0 here — the matrix inside is absolutely positioned, so this
-              box has no content height to fall back on, and licensing it to
-              shrink below content size is licensing it to reach zero.
+          {/* 3D Gallery Canvas. A definite height rather than flex-1 filling a
+              fixed panel: that is what leaves the panel with no free space to
+              redistribute, which is what was starving the top and padding the
+              bottom. `grow` (not flex-1, which would reset the basis to 0) only
+              comes into play on an unusually tall viewport, where it lets the
+              frame take up the slack instead of it collecting under the callout.
+              Interior spacing is the wrapper's gap now, so the space above and
+              below the gallery matches by construction.
 
-              max-h caps the frame instead of letting flex-1 run away on an
-              unusually tall viewport. That bound is what keeps the drift loop
-              honest: the seam shows once the frame outgrows one un-duplicated
-              column run, so the frame needs a ceiling the run is sized against
-              rather than a card count chased upward per display. */}
-          <div className="relative mt-12 max-h-[1000px] flex-1 py-4 md:mt-20">
+              max-h caps the frame because the drift loop's seam shows once the
+              frame outgrows one un-duplicated column run. min-h keeps it from
+              vanishing if an ancestor's height ever resolves to auto — every
+              element inside the frame is absolutely positioned, so it has no
+              content height of its own to fall back on. */}
+          <div className="relative h-[76vh] min-h-[420px] max-h-[980px] grow">
             <Gallery3D className="border-black/10 shadow-[0_40px_80px_-30px_rgba(24,20,16,0.45)]" />
           </div>
 

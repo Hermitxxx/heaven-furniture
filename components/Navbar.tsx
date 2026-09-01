@@ -28,8 +28,8 @@ interface NavBarProps {
 const navItems: NavItem[] = [
     { name: "Home", sectionId: "home", icon: Home },
     { name: "Pieces", sectionId: "pieces", icon: Sofa },
-    { name: "Collections", sectionId: "collections", icon: Sparkles },
     { name: "About", sectionId: "about", icon: Info },
+    { name: "Collections", sectionId: "collections", icon: Sparkles },
 ]
 
 // The pill floats over the page, so a section scrolled flush to y=0 would sit
