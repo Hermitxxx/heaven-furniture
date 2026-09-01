@@ -6,6 +6,8 @@ import { ArrowDown, Eye } from "lucide-react"
 import { animate, stagger } from "animejs"
 import Link from "next/link"
 import KineticGrid from "./backgrounds/KineticGrid"
+import MorphingHeadline, { type HeadlinePhrase } from "./MorphingHeadline"
+import Reveal from "./Reveal"
 
 import Bed from '../public/bed.jpeg'
 import Sofa from '../public/sofa.jpeg'
@@ -457,38 +459,24 @@ export function CinematicProductScroll() {
         }
     }, [])
 
-    useEffect(() => {
-        if (!containerRef.current) return
-
-        const gridItems = containerRef.current.querySelectorAll(
-            ".grid-item, .reveal"
-        )
-
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: "0px",
-        }
-
-        const gridObserver = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add("show", "active")
-                }
-            })
-        }, observerOptions)
-
-        gridItems.forEach((item) => {
-            gridObserver.observe(item)
-        })
-
-        return () => {
-            gridObserver.disconnect()
-        }
-    }, [])
-
     const mainTitleParts = finalTitle.split(" ")
     const mainTitleFirst = mainTitleParts[0]
     const mainTitleRest = mainTitleParts.slice(1).join(" ")
+
+    // The brand pair leads, and the rotation returns to it every cycle. The other
+    // three sit in the register the hero's own description sets — "a timeless
+    // lifestyle beyond crafting" — so: personal, made-to-measure, timeless.
+    // "Made to measure" is deliberate: it's the tailoring term for the tier above
+    // ready-made, which is what this workshop actually sells.
+    // Trail lines are kept to ten characters or fewer and leads to eight: at
+    // lg:text-[10rem] anything longer runs past the viewport, and the lead line is
+    // set in font-black, which is wider still.
+    const heroPhrases: HeadlinePhrase[] = [
+        { lead: mainTitleFirst, trail: mainTitleRest },
+        { lead: "CRAFTED", trail: "AROUND YOU" },
+        { lead: "MADE", trail: "TO MEASURE" },
+        { lead: "TIMELESS", trail: "BY DESIGN" },
+    ]
 
     return (
         <div
@@ -501,57 +489,65 @@ export function CinematicProductScroll() {
                 <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full animate-pulse"></div>
                 <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-muted-foreground/10 blur-[150px] rounded-full"></div>
 
-                {/* Content */}
+                {/* Content. Delays run 0.15 → 0.55 so the eyebrow, headline and
+                    description arrive in reading order — the staggered
+                    animationDelays the dead `reveal` class was carrying, now
+                    attached to something that runs. */}
                 <div className="relative z-10 text-center px-6 pt-20 w-full flex flex-col items-center justify-center h-full">
-                    <div className="overflow-hidden mb-4 md:mb-6 w-full flex justify-center">
-                        <span
-                            className="block text-[9px] md:text-[10px] font-black text-muted-foreground uppercase reveal text-center tracking-[0.3em] md:tracking-[0.8em] ps-[0.3em] md:ps-[0.8em]"
-                            style={{ animationDelay: "0.2s" }}
+                    <div className="mb-4 md:mb-6 w-full flex justify-center">
+                        <Reveal
+                            animation="mask"
+                            trigger="mount"
+                            delay={0.15}
+                            as="span"
+                            className="text-[9px] md:text-[10px] font-black text-muted-foreground uppercase text-center tracking-[0.3em] md:tracking-[0.8em] ps-[0.3em] md:ps-[0.8em]"
                         >
                             {finalSubtitle}
-                        </span>
+                        </Reveal>
                     </div>
 
                     <h1 className="text-6xl md:text-[8rem] lg:text-[10rem] font-black leading-[0.85] text-foreground w-full flex flex-col items-center justify-center text-center tracking-tighter">
-                        <div className="overflow-hidden w-full flex justify-center">
-                            <span
-                                className="block reveal text-center"
-                                style={{ animationDelay: "0.4s" }}
-                            >
-                                {mainTitleFirst}
-                            </span>
-                        </div>
-                        <div className="overflow-hidden mt-2 w-full flex justify-center">
-                            <span
-                                className="block italic font-bold text-muted-foreground reveal text-center"
-                                style={{ animationDelay: "0.6s" }}
-                            >
-                                {mainTitleRest}
-                            </span>
-                        </div>
+                        {/* fade, not mask: the headline underneath is a stack of
+                            absolutely positioned spans behind an SVG threshold
+                            filter, and sliding that whole filtered box would
+                            rasterise it twice over on first paint. */}
+                        <Reveal animation="fade" trigger="mount" delay={0.3} duration={0.9} as="span" className="w-full">
+                            <MorphingHeadline
+                                phrases={heroPhrases}
+                                srLabel={finalTitle}
+                                leadClassName="text-center"
+                                trailClassName="italic font-bold text-muted-foreground text-center"
+                            />
+                        </Reveal>
                     </h1>
 
-                    <div className="mt-6 md:mt-12 overflow-hidden w-full flex justify-center">
-                        <p
-                            className="text-muted-foreground text-center text-lg md:text-base max-w-lg font-bold leading-relaxed tracking-wide reveal"
-                            style={{ animationDelay: "0.8s" }}
-                        >
-                            {finalDescription}
-                        </p>
+                    <div className="mt-6 md:mt-12 w-full flex justify-center">
+                        <Reveal animation="up" trigger="mount" delay={0.55}>
+                            <p className="text-muted-foreground text-center text-lg md:text-base max-w-lg font-bold leading-relaxed tracking-wide">
+                                {finalDescription}
+                            </p>
+                        </Reveal>
                     </div>
                 </div>
 
-                {/* Scroll Indicator */}
-                <div
-                    className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 reveal"
-                    style={{ animationDelay: "1.2s" }}
-                >
-                    <div className="w-[1px] h-12 md:h-20 bg-foreground/10 relative overflow-hidden">
-                        <div className="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-transparent via-foreground/50 to-transparent animate-scroll-light"></div>
-                    </div>
-                    <span className="text-[9px] font-bold text-foreground/40 tracking-normal">
-                        SCROLL DOWN
-                    </span>
+                {/* Scroll Indicator. The reveal sits inside the positioned box
+                    rather than on it — the wrapper owns -translate-x-1/2, and a
+                    transform-based variant on the same element would overwrite
+                    it mid-animation. */}
+                <div className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2">
+                    <Reveal
+                        animation="fade"
+                        trigger="mount"
+                        delay={0.95}
+                        className="flex flex-col items-center gap-4"
+                    >
+                        <div className="w-[1px] h-12 md:h-20 bg-foreground/10 relative overflow-hidden">
+                            <div className="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-transparent via-foreground/50 to-transparent animate-scroll-light"></div>
+                        </div>
+                        <span className="text-[9px] font-bold text-foreground/40 tracking-normal">
+                            SCROLL DOWN
+                        </span>
+                    </Reveal>
                 </div>
             </KineticGrid>
 
