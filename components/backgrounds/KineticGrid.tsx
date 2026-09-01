@@ -54,10 +54,13 @@ export default function KineticGrid({
     children,
     className,
     globalColor = "default",
+    id,
 }: {
     children?: ReactNode;
     className?: string;
     globalColor?: "default" | "monochrome";
+    /** Anchor target, so the navbar can scroll to a grid-backed section. */
+    id?: string;
 }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -373,6 +376,7 @@ export default function KineticGrid({
 
     return (
         <div
+            id={id}
             className={cn(
                 "relative w-full overflow-hidden",
                 globalColor === "monochrome" ? "bg-[#ffffff]" : "bg-[#f8f7f5]",

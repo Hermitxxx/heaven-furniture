@@ -119,6 +119,7 @@ export const Features = ({
     return (
         <section
             ref={containerRef}
+            id="about"
             className={cn(
                 "relative w-full overflow-hidden border-t border-black/5 text-zinc-900 transition-colors duration-500",
                 className

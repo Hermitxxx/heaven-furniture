@@ -1,18 +1,15 @@
-
-import { OfferCarousel } from "@/components/demo";
 import CinematicProductScroll from "@/components/CinematicProductScroll";
-import { Features } from "@/components/Features";
+import { CinematicFooter } from "@/components/Footer";
 import { AnimeNavBar } from "@/components/Navbar";
-import ProductCard from "@/components/ProductCard";
 import ZoomInScroll from "@/components/ZoomInScroll";
-import Image from "next/image";
 
 export default function HomePage() {
   return (
     <>
-      <AnimeNavBar></AnimeNavBar>
-      <CinematicProductScroll></CinematicProductScroll>
-      <ZoomInScroll></ZoomInScroll>
+      <AnimeNavBar />
+      <CinematicProductScroll />
+      <ZoomInScroll />
+      <CinematicFooter />
     </>
   );
 }

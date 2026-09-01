@@ -174,7 +174,7 @@ function MinimalProductCard({ product }: { product: typeof MOCK_PRODUCTS[0] }) {
 }
 
 // 3. Product Hero Component
-function ProductHero({ product, reversed = false }: { product: typeof MOCK_PRODUCTS[0]; reversed?: boolean }) {
+function ProductHero({ product, reversed = false, id }: { product: typeof MOCK_PRODUCTS[0]; reversed?: boolean; id?: string }) {
     const sectionRef = useRef<HTMLDivElement>(null)
     const fullImageUrl = product.thumbnail ?? ""
 
@@ -244,6 +244,7 @@ function ProductHero({ product, reversed = false }: { product: typeof MOCK_PRODU
     return (
         <div
             ref={sectionRef}
+            id={id}
             className="scroll-section relative h-auto md:h-[250vh] w-full group"
         >
             <div className="relative md:sticky md:top-0 md:left-0 w-full h-auto md:h-screen overflow-hidden bg-transparent">
@@ -495,7 +496,7 @@ export function CinematicProductScroll() {
             className="bg-transparent text-foreground antialiased selection:bg-primary selection:text-primary-foreground w-full animate-fade-in"
         >
             {/* Intro Section - Cinematic Version */}
-            <KineticGrid className="relative h-[100dvh] w-full overflow-hidden" globalColor="monochrome">
+            <KineticGrid id="home" className="relative h-[100dvh] w-full overflow-hidden" globalColor="monochrome">
                 {/* Light Effects */}
                 <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full animate-pulse"></div>
                 <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-muted-foreground/10 blur-[150px] rounded-full"></div>
@@ -554,9 +555,17 @@ export function CinematicProductScroll() {
                 </div>
             </KineticGrid>
 
-            {/* Products - Render ProductHero for each item */}
+            {/* Products - Render ProductHero for each item.
+                The first one carries the #pieces anchor: it's the top of the
+                product run, so scrolling there lands you at the start of all
+                three reveals rather than mid-sequence. */}
             {MOCK_PRODUCTS.map((product, index) => (
-                <ProductHero key={product.id} product={product} reversed={index % 2 !== 0} />
+                <ProductHero
+                    key={product.id}
+                    product={product}
+                    reversed={index % 2 !== 0}
+                    id={index === 0 ? "pieces" : undefined}
+                />
             ))}
 
             {/* Summary Horizontal Collection - Using the same items */}

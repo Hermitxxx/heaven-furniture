@@ -1,14 +1,15 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import Link from "next/link"
-import { Home, Sofa, Sparkles, Info, Phone, LucideIcon } from "lucide-react"
+import { Home, Sofa, Sparkles, Info, LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useLenis } from "@/components/SmoothScrollProvider"
 
 interface NavItem {
     name: string
-    url: string
+    /** id of the element on the page this link scrolls to. */
+    sectionId: string
     icon: LucideIcon
 }
 
@@ -17,22 +18,166 @@ interface NavBarProps {
     defaultActive?: string
 }
 
+// Every entry must correspond to an element that actually renders an `id`:
+//   #home        → KineticGrid hero            (CinematicProductScroll)
+//   #pieces      → first ProductHero           (CinematicProductScroll)
+//   #about       → "Why choose us"             (Features)
+//   #collections → "Featured Collections"      (Carousel)
+// Listed in the order they should read in the pill, not document order — the
+// scroll spy below doesn't depend on the array being sorted.
 const navItems: NavItem[] = [
-    { name: "Home", url: "/", icon: Home },
-    { name: "Collections", url: "/#collections", icon: Sofa },
-    { name: "Bespoke", url: "/#bespoke", icon: Sparkles },
-    { name: "About", url: "/#about", icon: Info },
-    { name: "Contact", url: "/#contact", icon: Phone },
+    { name: "Home", sectionId: "home", icon: Home },
+    { name: "Pieces", sectionId: "pieces", icon: Sofa },
+    { name: "Collections", sectionId: "collections", icon: Sparkles },
+    { name: "About", sectionId: "about", icon: Info },
 ]
+
+// The pill floats over the page, so a section scrolled flush to y=0 would sit
+// underneath it. Roughly its height plus the top gap.
+const SCROLL_OFFSET = -104
+
+// A section becomes "current" once its top passes this fraction of the viewport
+// height. A third of the way down tracks what you're actually looking at better
+// than the very top edge does, especially for the tall pinned sections.
+const SPY_PROBE_RATIO = 0.35
+
+// How long to trust a click over the scroll position. Without this the active
+// pill walks through every section the page travels past on its way to the
+// target, which looks like the navbar changing its mind.
+const CLICK_PRIORITY_MS = 1600
+
+// Everything below the pinned video reveal in ZoomInScroll can move while a
+// scroll is in flight — the page's images finish loading, ScrollTrigger
+// re-measures — so the destination computed at click time can end up stale.
+// These control the correction passes that close the remaining gap.
+const MAX_SETTLE_PASSES = 3
+const SETTLE_TOLERANCE_PX = 8
 
 export function AnimeNavBar({ className, defaultActive = "Home" }: NavBarProps) {
     const [hoveredTab, setHoveredTab] = useState<string | null>(null)
     const [activeTab, setActiveTab] = useState<string>(defaultActive)
+    const lenisRef = useLenis()
+    // Set while a click-driven scroll is in flight, to keep the scroll spy from
+    // overriding the pill the user just picked. Released three ways — Lenis's
+    // `onComplete`, real wheel/touch input, and a timeout — because Lenis
+    // silently abandons its animation when the user takes over, so `onComplete`
+    // alone would leave this stuck on.
+    const isNavigating = useRef(false)
+    const releaseTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+    const scrollToTarget = (target: HTMLElement, offset: number, pass = 0) => {
+        const lenis = lenisRef?.current
+        if (!lenis) {
+            // Only reachable in the sliver before SmoothScrollProvider's effect
+            // runs. Once Lenis exists it owns the scroll position and this would
+            // fight it.
+            window.scrollTo({ top: target.offsetTop + offset, behavior: "smooth" })
+            return
+        }
+
+        isNavigating.current = true
+        if (releaseTimer.current) clearTimeout(releaseTimer.current)
+        releaseTimer.current = setTimeout(() => {
+            isNavigating.current = false
+        }, CLICK_PRIORITY_MS)
+
+        // Lenis clamps its destination to a scroll limit derived from cached
+        // dimensions, and ScrollTrigger's pin spacers in ZoomInScroll make the
+        // document much taller than that cache knows about — without this,
+        // scrolling to #collections stopped ~3700px short at the stale limit.
+        lenis.resize()
+
+        lenis.scrollTo(target, {
+            // Corrections are short hops, not a second journey.
+            duration: pass === 0 ? 1.4 : 0.6,
+            offset,
+            onComplete: () => {
+                // Cleared by wheel/touch — the user has taken over, so don't
+                // yank the page back.
+                if (!isNavigating.current) return
+
+                // Aiming for `rect.top === -offset`, so this is how far short
+                // (or past) the landing was.
+                const drift = target.getBoundingClientRect().top + offset
+                if (pass < MAX_SETTLE_PASSES && Math.abs(drift) > SETTLE_TOLERANCE_PX) {
+                    scrollToTarget(target, offset, pass + 1)
+                    return
+                }
+
+                isNavigating.current = false
+            },
+        })
+    }
+
+    const handleNavClick = (item: NavItem) => {
+        const target = document.getElementById(item.sectionId)
+        if (!target) return
+
+        setActiveTab(item.name)
+
+        // The hero already starts at the top of the document, so backing off by
+        // the navbar's height would just leave dead space above it.
+        scrollToTarget(target, item.sectionId === "home" ? 0 : SCROLL_OFFSET)
+    }
+
+    useEffect(() => {
+        // Real wheel or touch input means the user has taken the scroll back off
+        // the click, so the spy should resume immediately. Lenis's own
+        // programmatic scrolling doesn't dispatch either of these.
+        const releaseSpy = () => {
+            isNavigating.current = false
+        }
+
+        const updateActiveSection = () => {
+            if (isNavigating.current) return
+
+            const probe = window.innerHeight * SPY_PROBE_RATIO
+
+            // Of the sections whose top has already crossed the probe line, the
+            // current one is whichever is closest to it. Comparing positions
+            // instead of walking the list in order means `navItems` is free to
+            // be ordered for the reader — #about sits before #collections in the
+            // document but reads better after it in the pill.
+            let current = navItems[0].name
+            let closestTop = -Infinity
+
+            for (const item of navItems) {
+                const el = document.getElementById(item.sectionId)
+                if (!el) continue
+
+                const { top } = el.getBoundingClientRect()
+                if (top <= probe && top > closestTop) {
+                    closestTop = top
+                    current = item.name
+                }
+            }
+
+            setActiveTab((prev) => (prev === current ? prev : current))
+        }
+
+        updateActiveSection()
+
+        // Lenis drives the window's native scroll position, so ordinary scroll
+        // events still fire and there's no need to subscribe to Lenis directly.
+        window.addEventListener("scroll", updateActiveSection, { passive: true })
+        window.addEventListener("resize", updateActiveSection)
+        window.addEventListener("wheel", releaseSpy, { passive: true })
+        window.addEventListener("touchstart", releaseSpy, { passive: true })
+
+        return () => {
+            if (releaseTimer.current) clearTimeout(releaseTimer.current)
+            window.removeEventListener("scroll", updateActiveSection)
+            window.removeEventListener("resize", updateActiveSection)
+            window.removeEventListener("wheel", releaseSpy)
+            window.removeEventListener("touchstart", releaseSpy)
+        }
+    }, [])
 
     return (
         <div className="fixed top-5 left-0 right-0 z-9999">
             <div className="flex justify-center pt-6">
-                <motion.div
+                <motion.nav
+                    aria-label="Section navigation"
                     className={cn(
                         "flex items-center gap-3 bg-white/70 border border-black/10 backdrop-blur-xl py-2 px-2 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.08)] relative",
                         className
@@ -51,12 +196,22 @@ export function AnimeNavBar({ className, defaultActive = "Home" }: NavBarProps) 
                         const isHovered = hoveredTab === item.name
 
                         return (
-                            <Link
+                            <a
                                 key={item.name}
-                                href={item.url}
+                                href={`#${item.sectionId}`}
+                                aria-current={isActive ? "true" : undefined}
+                                // Labelled explicitly because the text span is
+                                // hidden below md: on mobile the icon is all
+                                // that renders.
+                                aria-label={item.name}
                                 onClick={(e) => {
+                                    // Left the href in place so the link is real
+                                    // for keyboard and middle-click, but the
+                                    // native hash jump has to be suppressed —
+                                    // it moves the scroll position out from
+                                    // under Lenis.
                                     e.preventDefault()
-                                    setActiveTab(item.name)
+                                    handleNavClick(item)
                                 }}
                                 onMouseEnter={() => setHoveredTab(item.name)}
                                 onMouseLeave={() => setHoveredTab(null)}
@@ -257,10 +412,10 @@ export function AnimeNavBar({ className, defaultActive = "Home" }: NavBarProps) 
                                         </div>
                                     </motion.div>
                                 )}
-                            </Link>
+                            </a>
                         )
                     })}
-                </motion.div>
+                </motion.nav>
             </div>
         </div>
     )

@@ -268,10 +268,16 @@ export function ZoomInScroll({
                 </div>
             </div>
 
-            {/* 3. OUTRO — product carousel */}
-            <footer>
+            {/* 3. OUTRO — product carousel. Plain div, not <footer>: the page's
+                real footer is CinematicFooter, and two <footer> landmarks in one
+                document leaves assistive tech with no single "end of page".
+                It also carries the #collections anchor rather than the section
+                inside Carousel, which animates in on a y-transform — measuring
+                a transformed element mid-animation gives the navbar a moving
+                target to scroll to. */}
+            <div id="collections">
                 <Carousel />
-            </footer>
+            </div>
 
             <style
                 dangerouslySetInnerHTML={{
