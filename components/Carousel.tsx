@@ -384,11 +384,12 @@ export const FilterDisclosure: React.FC<{
 // --- ProductCard Component ---
 
 const cardVariants: Variants = {
-    hidden: { opacity: 0, y: 40 },
+    hidden: { opacity: 0, y: 56, scale: 0.94 },
     visible: {
         opacity: 1,
         y: 0,
-        transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+        scale: 1,
+        transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
     },
 };
 
@@ -429,10 +430,8 @@ export function ProductCard({
                     variants={{ hover: { scale: 1.05 } }}
                 />
 
-                {/* Reduced dark overlay mask for significantly brighter images */}
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/60 via-zinc-950/10 to-transparent opacity-90 transition-opacity group-hover:opacity-100" />
 
-                {/* Hover Hint Badge */}
                 <div className="absolute right-4 top-4 z-10 flex items-center gap-1.5 rounded-full border border-white/20 bg-zinc-950/50 px-3 py-1.5 text-[11px] font-medium text-white opacity-0 backdrop-blur-md transition-all duration-300 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 shadow-md">
                     <Eye className="h-3.5 w-3.5 text-[#D7C3B1]" />
                     <span>Click for details</span>
@@ -575,7 +574,6 @@ export const OfferCarousel = React.forwardRef<HTMLDivElement, OfferCarouselProps
                 )}
             >
                 <div className="mx-auto max-w-7xl px-6 md:px-10">
-                    {/* Section Header with Integrated Filter Disclosure */}
                     <div className="mb-10 flex flex-col items-start justify-between gap-6 md:mb-14 md:flex-row md:items-end">
                         <div>
                             <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[#8a6f59]">
@@ -594,7 +592,6 @@ export const OfferCarousel = React.forwardRef<HTMLDivElement, OfferCarouselProps
                     </div>
 
                     <div ref={ref} className="group relative w-full" {...props}>
-                        {/* Left Navigation Arrow */}
                         <button
                             onClick={() => scroll('left')}
                             className="absolute left-0 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200 bg-white/90 text-zinc-950 opacity-0 shadow-md backdrop-blur-sm transition-opacity duration-300 hover:bg-white group-hover:opacity-100 disabled:opacity-0"
@@ -603,13 +600,13 @@ export const OfferCarousel = React.forwardRef<HTMLDivElement, OfferCarouselProps
                             <ChevronLeft className="h-6 w-6" />
                         </button>
 
-                        {/* Scrollable Container with Staggered Reveal Animations */}
                         <motion.div
                             key={selectedCategory}
                             ref={scrollContainerRef}
                             initial="hidden"
-                            animate="visible"
-                            transition={{ staggerChildren: 0.1 }}
+                            whileInView="visible"
+                            viewport={{ once: true, amount: 0.2 }}
+                            transition={{ staggerChildren: 0.09 }}
                             className="flex space-x-6 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none]"
                         >
                             {filteredOffers.map((offer) => (
@@ -659,8 +656,8 @@ export const OfferCarousel = React.forwardRef<HTMLDivElement, OfferCarouselProps
                                                 </div>
 
                                                 {offer.href && (
-                                                    <a
-                                                        href={offer.href}
+
+                                                    <a href={offer.href}
                                                         className="mt-2 flex items-center justify-center gap-2 rounded-lg bg-zinc-950 px-5 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-all hover:bg-[#8a6f59]"
                                                     >
                                                         Explore Piece
@@ -674,7 +671,6 @@ export const OfferCarousel = React.forwardRef<HTMLDivElement, OfferCarouselProps
                             ))}
                         </motion.div>
 
-                        {/* Right Navigation Arrow */}
                         <button
                             onClick={() => scroll('right')}
                             className="absolute right-0 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200 bg-white/90 text-zinc-950 opacity-0 shadow-md backdrop-blur-sm transition-opacity duration-300 hover:bg-white group-hover:opacity-100 disabled:opacity-0"
@@ -683,8 +679,8 @@ export const OfferCarousel = React.forwardRef<HTMLDivElement, OfferCarouselProps
                             <ChevronRight className="h-6 w-6" />
                         </button>
                     </div>
-                </div>
-            </motion.section>
+                </div >
+            </motion.section >
         );
     }
 );

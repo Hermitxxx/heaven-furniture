@@ -134,7 +134,7 @@ export function ZoomInScroll({
         if (video) {
             video.defaultMuted = true;
             video.muted = true;
-            video.play().catch(() => {});
+            video.play().catch(() => { });
         }
 
         const ctx = gsap.context(() => {
@@ -182,7 +182,7 @@ export function ZoomInScroll({
                 maskConfigRef.current = getMaskConfig();
                 applyMaskSize(
                     maskConfigRef.current.initialSize +
-                        Math.pow(scrollTrigger.progress, GROWTH_EASE) * maskConfigRef.current.growth
+                    Math.pow(scrollTrigger.progress, GROWTH_EASE) * maskConfigRef.current.growth
                 );
             };
             window.addEventListener('resize', handleResize);

@@ -1,5 +1,5 @@
 
-import { OfferCarousel } from "@/components/Carousel";
+import { OfferCarousel } from "@/components/demo";
 import CinematicProductScroll from "@/components/CinematicProductScroll";
 import { Features } from "@/components/Features";
 import { AnimeNavBar } from "@/components/Navbar";
