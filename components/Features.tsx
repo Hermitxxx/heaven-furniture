@@ -129,46 +129,12 @@ export const Features = ({
                     <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-zinc-500">
                         Why we exist
                     </p>
-                    <h2 className="mt-4 text-4xl font-black uppercase tracking-[-0.06em] text-zinc-950 md:text-6xl">
+                    <h2 className="mt-4 text-4xl font-black uppercase tracking-[-0.06em] text-zinc-950 md:text-7xl">
                         Why choose us
                     </h2>
                 </div>
 
                 <div className="flex flex-col items-center justify-between gap-12 md:flex-row md:gap-8">
-                    <div className="z-20 w-full md:w-1/2">
-                        <nav>
-                            <ul className="flex flex-col gap-10 md:gap-14">
-                                {items.map((item, index) => (
-                                    <li
-                                        key={item.num}
-                                        onMouseEnter={() => handleItemHover(index)}
-                                        className="group cursor-pointer"
-                                    >
-                                        <div className="flex items-start gap-5 md:gap-6">
-                                            <span className={cn(
-                                                "mt-2 text-2xl font-bold transition-all duration-500 md:text-3xl",
-                                                activeIndex === index
-                                                    ? "scale-110 text-[#8a6f59]"
-                                                    : "text-zinc-400"
-                                            )}>
-                                                {item.num}
-                                            </span>
-
-                                            <h3 className={cn(
-                                                "text-4xl font-black uppercase leading-[0.82] tracking-[-0.05em] transition-all duration-700 md:text-5xl lg:text-6xl",
-                                                activeIndex === index
-                                                    ? "translate-x-2 text-zinc-950 opacity-100"
-                                                    : "translate-x-0 text-zinc-500 opacity-40"
-                                            )}>
-                                                {item.name.split(' ')[0]}<br />
-                                                {item.name.split(' ')[1]}
-                                            </h3>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        </nav>
-                    </div>
 
                     <div className="relative mt-6 flex w-full items-center justify-center md:mt-0 md:w-1/2">
                         <div className="absolute h-[120%] w-[120%] rounded-full bg-[#d7c3b1]/20 blur-[110px]" />
@@ -233,6 +199,41 @@ export const Features = ({
                                 />
                             </g>
                         </svg>
+                    </div>
+
+                    <div className="z-20 w-full md:w-1/2">
+                        <nav>
+                            <ul className="flex flex-col gap-10 md:gap-14">
+                                {items.map((item, index) => (
+                                    <li
+                                        key={item.num}
+                                        onMouseEnter={() => handleItemHover(index)}
+                                        className="group cursor-pointer"
+                                    >
+                                        <div className="flex items-start gap-5 md:gap-6">
+                                            <span className={cn(
+                                                "mt-2 text-2xl font-bold transition-all duration-500 md:text-3xl",
+                                                activeIndex === index
+                                                    ? "scale-110 text-[#8a6f59]"
+                                                    : "text-zinc-400"
+                                            )}>
+                                                {item.num}
+                                            </span>
+
+                                            <h3 className={cn(
+                                                "text-4xl font-black uppercase leading-[0.82] tracking-[-0.05em] transition-all duration-700 md:text-5xl",
+                                                activeIndex === index
+                                                    ? "translate-x-2 text-[#8a6f59] opacity-100"
+                                                    : "translate-x-0 text-zinc-500 opacity-40"
+                                            )}>
+                                                {item.name.split(' ')[0]}<br />
+                                                {item.name.split(' ')[1]}
+                                            </h3>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

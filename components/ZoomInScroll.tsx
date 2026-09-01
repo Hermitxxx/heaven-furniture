@@ -1,19 +1,21 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Features } from './Features'; // ← adjust this path to wherever Features actually lives
+import { Features } from './Features'; // ← adjust to wherever Features actually lives
 import { Carousel } from './Carousel';
 
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
 }
 
-// ── Sofa Silhouette Mask ──────────
+// ────────────────────────────────────────────────────────────────
+// Sofa silhouette mask
 // Two rolled arms, a 3-cushion tufted backrest, a seat base band, and 4 feet.
 // Built with encodeURIComponent (not a hand-escaped string) so the data URI
 // can't get corrupted by quotes, '#', or line breaks.
+// ────────────────────────────────────────────────────────────────
 const SOFA_SVG_MARKUP = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" fill="#000000">
   <rect x="10" y="50" width="28" height="86" rx="14"/>
   <rect x="202" y="50" width="28" height="86" rx="14"/>
@@ -27,9 +29,65 @@ const SOFA_SVG_MARKUP = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24
 
 const SOFA_MASK_SVG_URI = `data:image/svg+xml,${encodeURIComponent(SOFA_SVG_MARKUP)}`;
 
-export interface LipScrollZoominAnimationProps {
+// Mask width in px at each breakpoint, and how much the mask grows over the
+// scroll, keyed to the same breakpoint (a small screen doesn't need to grow
+// as many pixels to feel like it fills the frame as a large one does).
+const MASK_BREAKPOINTS = [
+    { maxWidth: 640, initialSize: 300, growth: 3400 },
+    { maxWidth: 1024, initialSize: 400, growth: 4200 },
+    { maxWidth: Infinity, initialSize: 480, growth: 4800 },
+] as const;
+
+function getMaskConfig() {
+    if (typeof window === 'undefined') return MASK_BREAKPOINTS[2];
+    return (
+        MASK_BREAKPOINTS.find((bp) => window.innerWidth < bp.maxWidth) ??
+        MASK_BREAKPOINTS[MASK_BREAKPOINTS.length - 1]
+    );
+}
+
+// Growth curve: progress^GROWTH_EASE. Above 1, growth stays subtle early and
+// accelerates sharply near the end of the scroll.
+const GROWTH_EASE = 2.3;
+const PIN_SCROLL_DISTANCE = '+=260%';
+const VIDEO_END_SCALE = 1.22;
+
+// ────────────────────────────────────────────────────────────────
+// Small decorative subcomponent — the four viewfinder-style corner marks
+// ────────────────────────────────────────────────────────────────
+const CORNER_PATHS = {
+    tl: 'M10 0V1H1V10H0V0H10Z',
+    tr: 'M10 0V10H9V1H0V0H10Z',
+    bl: 'M-4.37116e-07 0L1 -4.37114e-08L1 9L10 9L10 10L0 10L-4.37116e-07 0Z',
+    br: 'M10 10L-4.37114e-07 10L-3.93402e-07 9L9 9L9 -4.37114e-08L10 0L10 10Z',
+} as const;
+
+const CORNER_POSITION_CLASSES: Record<keyof typeof CORNER_PATHS, string> = {
+    tl: 'top-[10px] left-[10px]',
+    tr: 'top-[10px] right-[10px]',
+    bl: 'bottom-[10px] left-[10px]',
+    br: 'bottom-[10px] right-[10px]',
+};
+
+function CornerMark({ corner }: { corner: keyof typeof CORNER_PATHS }) {
+    return (
+        <div
+            className={`absolute z-30 pointer-events-none w-4 h-4 sm:w-5 sm:h-5 text-black ${CORNER_POSITION_CLASSES[corner]}`}
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 10 10" fill="none" className="w-full h-full">
+                <path d={CORNER_PATHS[corner]} fill="currentColor" style={{ mixBlendMode: 'difference' }} />
+            </svg>
+        </div>
+    );
+}
+
+// ────────────────────────────────────────────────────────────────
+// Main component
+// ────────────────────────────────────────────────────────────────
+export interface ZoomInScrollProps {
     outroTitle?: React.ReactNode;
     outroSubtitle?: React.ReactNode;
+    watermarkText?: string;
     videoSrc?: string;
     posterSrc?: string;
     className?: string;
@@ -48,81 +106,117 @@ export function ZoomInScroll({
             <span className="text-blue-600 font-black">BESPOKE INTERACTION</span>.
         </>
     ),
-    videoSrc = 'https://res.cloudinary.com/jvbg08pb/video/upload/v1788206167/cinematic.mp4',
+    watermarkText = 'HEAVEN FURNITURE',
+    videoSrc = 'https://res.cloudinary.com/jvbg08pb/video/upload/v1788222015/cinematic.mp4',
     posterSrc = '',
     className = '',
-}: LipScrollZoominAnimationProps) {
+}: ZoomInScrollProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const pinRef = useRef<HTMLDivElement>(null);
     const maskLayerRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
+    // Holds the current breakpoint's { initialSize, growth } so onUpdate can
+    // read it every scroll tick without re-touching window.innerWidth each time.
+    const maskConfigRef = useRef(getMaskConfig());
+
+    const applyMaskSize = (px: number) => {
+        const el = maskLayerRef.current;
+        if (!el) return;
+        el.style.setProperty('--maskW', `${px}px`);
+        el.style.webkitMaskSize = `${px}px`;
+        el.style.maskSize = `${px}px`;
+    };
 
     useEffect(() => {
         if (!containerRef.current || !pinRef.current) return;
 
-        if (videoRef.current) {
-            videoRef.current.defaultMuted = true;
-            videoRef.current.muted = true;
-            videoRef.current.play().catch(() => { });
+        const video = videoRef.current;
+        if (video) {
+            video.defaultMuted = true;
+            video.muted = true;
+            video.play().catch(() => {});
         }
 
         const ctx = gsap.context(() => {
-            const getInitialSize = () => {
-                if (typeof window === 'undefined') return 420;
-                if (window.innerWidth < 640) return 300;
-                if (window.innerWidth < 1024) return 400;
-                return 480;
-            };
+            maskConfigRef.current = getMaskConfig();
+            applyMaskSize(maskConfigRef.current.initialSize);
 
-            const initialSize = getInitialSize();
-
-            if (maskLayerRef.current) {
-                maskLayerRef.current.style.setProperty('--maskW', `${initialSize}px`);
-                maskLayerRef.current.style.webkitMaskSize = `${initialSize}px`;
-                maskLayerRef.current.style.maskSize = `${initialSize}px`;
-            }
-
+            // The timeline must be created INSIDE the scrollTrigger config for
+            // scrubbing to work — that's what wires its progress to scroll
+            // position. (A previous version created a ScrollTrigger separately
+            // and passed it to a tween afterward via `scrollTrigger: existingInstance`,
+            // which does not attach anything — the tween just ran unscrubbed
+            // with no driver. That's what killed the zoom effect.)
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: containerRef.current,
                     start: 'top top',
-                    end: '+=260%',
+                    end: PIN_SCROLL_DISTANCE,
                     scrub: 1.2,
                     pin: pinRef.current,
                     pinSpacing: true,
                     anticipatePin: 1,
+                    invalidateOnRefresh: true,
                     onUpdate: (self) => {
-                        const progress = self.progress;
-                        const startSize = getInitialSize();
-                        const currentSize = startSize + Math.pow(progress, 2.3) * 4800;
-                        if (maskLayerRef.current) {
-                            maskLayerRef.current.style.setProperty('--maskW', `${currentSize}px`);
-                            maskLayerRef.current.style.webkitMaskSize = `${currentSize}px`;
-                            maskLayerRef.current.style.maskSize = `${currentSize}px`;
-                        }
+                        const { initialSize, growth } = maskConfigRef.current;
+                        const size = initialSize + Math.pow(self.progress, GROWTH_EASE) * growth;
+                        applyMaskSize(size);
                     },
                 },
             });
 
-            tl.to(
-                videoRef.current,
-                {
-                    scale: 1.22,
-                    ease: 'none',
-                },
-                0
-            );
+            tl.to(video, { scale: VIDEO_END_SCALE, ease: 'none' }, 0);
+
+            const scrollTrigger = tl.scrollTrigger as ScrollTrigger;
+
+            // If the video's real dimensions arrive after ScrollTrigger's first
+            // measurement, refresh so the pin's start/end points stay accurate —
+            // otherwise the first scroll into the pin can visibly snap to correct.
+            const handleLoadedMetadata = () => ScrollTrigger.refresh();
+            video?.addEventListener('loadedmetadata', handleLoadedMetadata);
+
+            // Recompute which breakpoint's mask config applies on resize/rotate,
+            // and immediately re-paint the mask at the current scroll progress
+            // so a resize mid-scroll doesn't leave a stale size on screen.
+            const handleResize = () => {
+                maskConfigRef.current = getMaskConfig();
+                applyMaskSize(
+                    maskConfigRef.current.initialSize +
+                        Math.pow(scrollTrigger.progress, GROWTH_EASE) * maskConfigRef.current.growth
+                );
+            };
+            window.addEventListener('resize', handleResize);
+
+            return () => {
+                video?.removeEventListener('loadedmetadata', handleLoadedMetadata);
+                window.removeEventListener('resize', handleResize);
+            };
         }, containerRef);
 
         return () => ctx.revert();
     }, []);
 
+    const maskLayerStyle = useMemo<React.CSSProperties>(
+        () => ({
+            WebkitMaskImage: `url("${SOFA_MASK_SVG_URI}")`,
+            maskImage: `url("${SOFA_MASK_SVG_URI}")`,
+            WebkitMaskPosition: '50% 50%',
+            maskPosition: '50% 50%',
+            WebkitMaskRepeat: 'no-repeat',
+            maskRepeat: 'no-repeat',
+            WebkitMaskSize: 'var(--maskW, 480px)',
+            maskSize: 'var(--maskW, 480px)',
+            transition: 'mask-size 0.04s linear, -webkit-mask-size 0.04s linear',
+        }),
+        []
+    );
+
     return (
         <div className={`w-full bg-white text-black selection:bg-blue-600 selection:text-white ${className}`}>
-            {/* 1. INTRO SECTION — Features block */}
+            {/* 1. INTRO — feature grid */}
             <Features />
 
-            {/* 2. PURE SOLO SOFA MASK SCROLL DIVE SECTION */}
+            {/* 2. PINNED SOFA-MASK VIDEO REVEAL */}
             <div
                 ref={containerRef}
                 className="relative w-full bg-white text-black selection:bg-blue-600 selection:text-white"
@@ -130,59 +224,31 @@ export function ZoomInScroll({
             >
                 <div
                     ref={pinRef}
-                    className="motion-section__pin sticky top-0 w-full h-screen overflow-hidden flex items-center justify-center bg-white select-none relative"
+                    // Deliberately NOT `sticky`: ScrollTrigger's `pin` option takes
+                    // this element to `position: fixed` itself once the trigger
+                    // fires. Having `sticky` here too means two positioning systems
+                    // fight over the same box during the handoff — that caused a
+                    // micro-jump on the first scroll into the section.
+                    className="motion-section__pin relative w-full h-screen overflow-hidden flex items-center justify-center bg-white select-none"
                 >
-                    {/* Top-Left Corner */}
-                    <div className="absolute top-[10px] left-[10px] z-30 pointer-events-none w-4 h-4 sm:w-5 sm:h-5 text-black">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 10 10" fill="none" className="w-full h-full">
-                            <path d="M10 0V1H1V10H0V0H10Z" fill="currentColor" style={{ mixBlendMode: 'difference' }} />
-                        </svg>
-                    </div>
+                    <CornerMark corner="tl" />
+                    <CornerMark corner="tr" />
+                    <CornerMark corner="bl" />
+                    <CornerMark corner="br" />
 
-                    {/* Top-Right Corner */}
-                    <div className="absolute top-[10px] right-[10px] z-30 pointer-events-none w-4 h-4 sm:w-5 sm:h-5 text-black">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 10 10" fill="none" className="w-full h-full">
-                            <path d="M10 0V10H9V1H0V0H10Z" fill="currentColor" style={{ mixBlendMode: 'difference' }} />
-                        </svg>
-                    </div>
-
-                    {/* Bottom-Left Corner */}
-                    <div className="absolute bottom-[10px] left-[10px] z-30 pointer-events-none w-4 h-4 sm:w-5 sm:h-5 text-black">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 10 10" fill="none" className="w-full h-full">
-                            <path d="M-4.37116e-07 0L1 -4.37114e-08L1 9L10 9L10 10L0 10L-4.37116e-07 0Z" fill="currentColor" style={{ mixBlendMode: 'difference' }} />
-                        </svg>
-                    </div>
-
-                    {/* Bottom-Right Corner */}
-                    <div className="absolute bottom-[10px] right-[10px] z-30 pointer-events-none w-4 h-4 sm:w-5 sm:h-5 text-black">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 10 10" fill="none" className="w-full h-full">
-                            <path d="M10 10L-4.37114e-07 10L-3.93402e-07 9L9 9L9 -4.37114e-08L10 0L10 10Z" fill="currentColor" style={{ mixBlendMode: 'difference' }} />
-                        </svg>
-                    </div>
-
-                    {/* Subtle Ambient Background Watermark */}
+                    {/* Ambient background watermark */}
                     <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none z-0">
                         <span className="text-[20vw] font-black uppercase tracking-tighter text-black">
-                            HEAVEN FURNITURE
+                            {watermarkText}
                         </span>
                     </div>
 
-                    {/* Pure Solo Sofa Mask Video Portal */}
+                    {/* Sofa-mask video portal */}
                     <div className="absolute inset-0 w-full h-full z-10 flex items-center justify-center">
                         <div
                             ref={maskLayerRef}
                             className="motion-section__bottom w-full h-full relative overflow-hidden flex items-center justify-center"
-                            style={{
-                                WebkitMaskImage: `url("${SOFA_MASK_SVG_URI}")`,
-                                maskImage: `url("${SOFA_MASK_SVG_URI}")`,
-                                WebkitMaskPosition: '50% 50%',
-                                maskPosition: '50% 50%',
-                                WebkitMaskRepeat: 'no-repeat',
-                                maskRepeat: 'no-repeat',
-                                WebkitMaskSize: 'var(--maskW, 480px)',
-                                maskSize: 'var(--maskW, 480px)',
-                                transition: 'mask-size 0.04s linear, -webkit-mask-size 0.04s linear',
-                            }}
+                            style={maskLayerStyle}
                         >
                             <video
                                 ref={videoRef}
@@ -192,23 +258,19 @@ export function ZoomInScroll({
                                 playsInline
                                 autoPlay
                                 preload="auto"
-                                poster={posterSrc}
-                                style={{
-                                    transform: 'scale(1.0)',
-                                    transformOrigin: '50% 50%',
-                                }}
+                                poster={posterSrc || undefined}
+                                style={{ transformOrigin: '50% 50%' }}
                             >
                                 <source src={videoSrc} type="video/mp4" />
-                                <source src="https://res.cloudinary.com/jvbg08pb/video/upload/v1788206167/cinematic.mp4" type="video/mp4" />
                             </video>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* 3. OUTRO SECTION */}
+            {/* 3. OUTRO — product carousel */}
             <footer>
-                <Carousel></Carousel>
+                <Carousel />
             </footer>
 
             <style
