@@ -12,9 +12,97 @@ import {
 
 // External component imports (Adjust paths to match your project structure)
 import WhyChooseUs from './WhyChooseUs';
-import Gallery3D from './Gallery3D';
+import { GalleryCarousel, type HeroCarouselItem } from './GalleryCarousel';
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Chapter 03's slides — every photograph the workshop actually owns, in
+// `public/products`, and nothing from a stock library.
+//
+// Titles are broken across two lines by hand rather than wrapped, because the
+// carousel reveals a headline one line at a time and an automatic break would
+// put the fold in a different place on every slide. They mirror the titles in
+// CollectionGrid's `defaultOffers`, so a piece renamed there has to be renamed
+// here too.
+const WORKSHOP_SLIDES: HeroCarouselItem[] = [
+  {
+    id: 'emerald-velvet-platform-bed',
+    title: 'EMERALD VELVET\nPLATFORM BED',
+    image: '/products/hv-7.jpeg',
+    credit: 'BEDROOM · MADE TO ORDER',
+    meta: ['COTTON VELVET', 'SOLID WALNUT', 'KING'],
+  },
+  {
+    id: 'royal-blue-carved-sofa-set',
+    title: 'ROYAL BLUE\nCARVED SOFA SET',
+    image: '/products/hv-5.jpeg',
+    credit: 'LIVING ROOM · MADE TO ORDER',
+    meta: ['VELVET', 'CARVED MAHOGANY', '3+2 SEATER'],
+  },
+  {
+    id: 'ivory-carved-dining-set',
+    title: 'IVORY CARVED\nDINING SET',
+    image: '/products/hv-3.jpeg',
+    credit: 'DINING · MADE TO ORDER',
+    meta: ['CREAM MARBLE', 'IVORY LACQUER', 'EIGHT SEATS'],
+  },
+  {
+    id: 'marble-teak-dining-table',
+    title: 'MARBLE & TEAK\nDINING TABLE',
+    image: '/products/hv-8.jpeg',
+    credit: 'DINING · MADE TO ORDER',
+    meta: ['MARBLE', 'SOLID TEAK', 'EIGHT SEATS'],
+  },
+  {
+    id: 'champagne-gilt-sofa-set',
+    title: 'CHAMPAGNE GILT\nSOFA SET',
+    image: '/products/hv-4.jpeg',
+    credit: 'LIVING ROOM · MADE TO ORDER',
+    meta: ['QUILTED JACQUARD', 'GILT FRAME', '3+1+1'],
+  },
+  {
+    id: 'embroidered-gilt-daybed',
+    title: 'EMBROIDERED\nGILT DAYBED',
+    image: '/products/hv-6.jpeg',
+    credit: 'LIVING ROOM · MADE TO ORDER',
+    meta: ['VELVET', 'HAND EMBROIDERED', 'THREE SEATS'],
+  },
+  {
+    id: 'turned-post-accent-chairs',
+    title: 'TURNED POST\nACCENT CHAIRS',
+    image: '/products/hv-2.jpg',
+    credit: 'LIVING ROOM · MADE TO ORDER',
+    meta: ['WOOL BLEND', 'TURNED ROSEWOOD', 'SOLD AS A PAIR'],
+  },
+  {
+    id: 'woven-hanging-egg-chair',
+    title: 'WOVEN HANGING\nEGG CHAIR',
+    image: '/products/hv-1.jpg',
+    credit: 'BALCONY · MADE TO ORDER',
+    meta: ['WOVEN RATTAN', 'STEEL STAND', 'CUSHIONS INCLUDED'],
+  },
+  {
+    id: 'classic-wooden-bed-frame',
+    title: 'CLASSIC WOODEN\nBED FRAME',
+    image: '/products/bed.jpeg',
+    credit: 'BEDROOM · MADE TO ORDER',
+    meta: ['SOLID HARDWOOD', 'WHITE LACQUER', 'QUEEN'],
+  },
+  {
+    id: 'modern-tufted-sofa',
+    title: 'MODERN TUFTED\nSOFA',
+    image: '/products/sofa.jpeg',
+    credit: 'LIVING ROOM · MADE TO ORDER',
+    meta: ['CHANNEL TUFTED', 'WALNUT BASE', 'TWO SEATS'],
+  },
+  {
+    id: 'minimalist-vanity-dresser',
+    title: 'MINIMALIST\nVANITY DRESSER',
+    image: '/products/vanity.jpeg',
+    credit: 'BEDROOM · MADE TO ORDER',
+    meta: ['OAK VENEER', 'LED-LIT MIRROR', 'TWO TIERS'],
+  },
+];
 
 function cx(...parts: Array<string | undefined | false | null>): string {
   return parts.filter(Boolean).join(' ');
@@ -204,8 +292,15 @@ export default function FurnitureStoryScroll() {
         </div>
       </FlowSection>
 
-      {/* PAGE 3: the finished-work wall. */}
-      <FlowSection className="bg-[#f2efe9] text-zinc-900">
+      {/* PAGE 3: the finished-work carousel.
+          Back on Chapter 01's near-black rather than another cream. The chapters
+          are meant to alternate — each one rotates up over the one before it, and
+          that reveal only reads as a new panel arriving if the two fields differ.
+          Chapter 02 paints its own #f7f5f1 from inside WhyChooseUs, so a #f2efe9
+          here was two all-but-identical creams in a row and the rotation looked
+          like a rendering glitch instead of a page turn. Palette below is
+          Chapter 01's, token for token. */}
+      <FlowSection className="bg-[#121212] text-zinc-100">
         {/* flex-1, not h-full: flow-art-container sets min-h-screen with no
             definite height, so a percentage height here resolves against
             content and collapses anything inside that tries to grow into it.
@@ -222,50 +317,69 @@ export default function FurnitureStoryScroll() {
             heading air the 4vw container padding alone didn't. */}
         <div className="flex flex-1 flex-col justify-center gap-8 w-full pt-6 md:gap-12 md:pt-10">
           {/* Header Section */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-black/10 pb-5">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-800/80 pb-5">
             <div>
-              <div className="flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-[#8a6f59] mb-2">
-                <span className="flex h-2 w-2 rounded-full bg-zinc-950" />
+              <div className="flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-[#D7C3B1] mb-2">
+                <span className="flex h-2 w-2 rounded-full bg-[#8a6f59]" />
                 Chapter 03
               </div>
               {/* Same scale as the WhyChooseUs h2 in PAGE 2 — text-4xl/md:text-6xl
                   at tracking-[-0.06em] — so the two chapters read as the same
                   level of heading. leading-[0.95] stays because this one is two
                   lines where that one is one. */}
-              <h2 className="text-4xl font-black uppercase tracking-[-0.06em] text-zinc-950 leading-[0.95] md:text-6xl">
+              <h2 className="text-4xl font-black uppercase tracking-[-0.06em] text-white leading-[0.95] md:text-6xl">
                 Out Of The Workshop. <br />
-                <span className="text-[#8a6f59]">Into Your Home.</span>
+                {/* Sand, not the clay #8a6f59 this line used on cream: clay is
+                    only a shade off #121212 and the second half of the headline
+                    would all but vanish. */}
+                <span className="text-[#D7C3B1]">Into Your Home.</span>
               </h2>
             </div>
-            <p className="max-w-md text-xs sm:text-sm text-zinc-600 leading-relaxed">
-              A few hundred rooms across Chattogram have one of these in them. The wall drifts on its own — on a desktop it tilts toward your cursor.
+            <p className="max-w-md text-xs sm:text-sm text-zinc-400 leading-relaxed">
+              A few hundred rooms across Chattogram have one of these in them. The strip moves on its own until you take it over — drag it, or pick a card.
             </p>
           </div>
 
-          {/* 3D Gallery Canvas. A definite height rather than flex-1 filling a
+          {/* The carousel's stage. A definite height rather than flex-1 filling a
               fixed panel: that is what leaves the panel with no free space to
               redistribute, which is what was starving the top and padding the
               bottom. `grow` (not flex-1, which would reset the basis to 0) only
               comes into play on an unusually tall viewport, where it lets the
-              frame take up the slack instead of it collecting under the callout.
-              Interior spacing is the wrapper's gap now, so the space above and
-              below the gallery matches by construction.
+              stage take up the slack instead of it collecting under the callout.
+              Interior spacing is the wrapper's gap, so the space above and below
+              matches by construction.
 
-              max-h caps the frame because the drift loop's seam shows once the
-              frame outgrows one un-duplicated column run. min-h keeps it from
-              vanishing if an ancestor's height ever resolves to auto — every
-              element inside the frame is absolutely positioned, so it has no
-              content height of its own to fall back on. */}
-          <div className="relative h-[76vh] min-h-[420px] max-h-[980px] grow">
-            <Gallery3D className="border-black/10 shadow-[0_40px_80px_-30px_rgba(24,20,16,0.45)]" />
+              The height has to be definite for a second reason: the stage is
+              `h-full` and everything inside it is absolutely positioned, so if
+              an ancestor's height ever resolved to auto the whole panel would
+              collapse to nothing — hence the min-h floor as well.
+
+              max-h caps it because the carousel's cards are clamped at 440px
+              tall while the headline keeps scaling with the stage; past that the
+              type starts outgrowing the strip it sits above.
+
+              The drop shadow the carousel carried here is gone with the palette
+              flip: it was rgba(24,20,16,…), which on a #121212 field is the
+              field. A hairline is all the separation a black stage needs against
+              near-black. */}
+          <div className="relative h-[88vh] min-h-[560px] max-h-[1100px] grow">
+            <GalleryCarousel
+              items={WORKSHOP_SLIDES}
+              ariaLabel="Finished pieces from the workshop"
+              autoplay
+              autoplayDelay={5200}
+              className="rounded-2xl border border-white/10"
+            />
           </div>
 
           {/* Bottom Callout */}
-          <div className="flex items-center justify-between border-t border-black/10 pt-4">
-            <span className="text-xs font-semibold uppercase tracking-widest text-zinc-500">
+          <div className="flex items-center justify-between border-t border-zinc-800/80 pt-4">
+            {/* zinc-400, not the 500 this used on cream — 500 against #121212 is
+                about 3.8:1, under the 4.5 that text this small needs. */}
+            <span className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
               Finished pieces
             </span>
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#8a6f59]">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#D7C3B1]">
               <span>Agrabad Showroom Collection</span>
               <ArrowUpRight className="h-4 w-4" />
             </div>
