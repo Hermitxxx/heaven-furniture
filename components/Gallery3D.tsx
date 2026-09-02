@@ -32,20 +32,36 @@ import { cn } from "@/lib/utils";
  * the parent hands it.
  */
 
+// Exactly COLUMNS.length × CARDS_PER_COLUMN entries — 20 — because COLUMN_ITEMS
+// below walks this list in contiguous runs and anything past the twentieth entry
+// would sit in the file never rendering.
+//
+// The workshop's own photographs (`/products/*`) are interleaved through the
+// stock frames rather than sitting at the front of the list, for the same reason:
+// contiguous runs mean a leading block would put every real piece in the left
+// column or two and leave the right of the wall entirely stock. Two per column,
+// at the first and fourth slot of each run.
 const GALLERY_IMAGES = [
+  "/products/hv-7.jpeg",
   "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=600&q=80",
   "https://images.unsplash.com/photo-1540574163026-643ea20ade25?auto=format&fit=crop&w=600&q=80",
+  "/products/hv-5.jpeg",
   "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=600&q=80",
+  "/products/hv-3.jpeg",
   "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=600&q=80",
   "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=600&q=80",
+  "/products/hv-8.jpeg",
   "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=600&q=80",
+  "/products/hv-4.jpeg",
   "https://images.unsplash.com/photo-1615066390971-03e4e1c36ddf?auto=format&fit=crop&w=600&q=80",
   "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=600&q=80",
+  "/products/hv-6.jpeg",
   "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&w=600&q=80",
+  "/products/hv-2.jpg",
   "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=600&q=80",
   "https://images.unsplash.com/photo-1532372576444-dda954194ad0?auto=format&fit=crop&w=600&q=80",
+  "/products/hv-1.jpg",
   "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=600&q=80",
-  "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80",
 ];
 
 // Seconds per loop and direction, one entry per column. Uneven durations are

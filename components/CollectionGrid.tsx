@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import Image from 'next/image';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, MotionConfig, useReducedMotion, type Variants } from 'framer-motion';
 import { ArrowRight, Eye } from 'lucide-react';
@@ -14,6 +15,7 @@ import type { IconType } from 'react-icons';
 import { cn } from '@/lib/utils';
 import { BiCategoryAlt } from 'react-icons/bi';
 import { useLenis } from './SmoothScrollProvider';
+import PaginationWithIconAndLabel from './Pagination';
 
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
@@ -53,10 +55,217 @@ export const FILTER_ITEMS: FilterItem[] = [
     { id: 'lighting', label: 'Lighting', icon: MdLightbulb },
 ];
 
-// Images are requested at 900px wide, not the 1200 the samples used: the widest
-// a card ever renders is ~380px in the three-column grid and ~450px in the
-// detail dialog, and eleven of them mount on a single page.
+// The workshop's own pieces lead the array, because the grid renders in array
+// order and these are photographs of real work rather than the stock frames
+// that follow them.
+//
+// Remote images are requested at 900px wide, not the 1200 the samples used: the
+// widest a card ever renders is ~380px in the three-column grid and ~450px in
+// the detail dialog. The local files are 2048px square as shot, and next/image
+// resizes them off the `sizes` the card declares.
 export const defaultOffers: Offer[] = [
+    {
+        id: "emerald-velvet-platform-bed",
+        category: "beds",
+        imageSrc: "/products/hv-7.jpeg",
+        imageAlt: "Emerald Velvet Platform Bed",
+        title: "Emerald Velvet Platform Bed",
+        tag: "Bedroom · Beds",
+        description: "A channel-tufted headboard in emerald cotton velvet, capped and framed in polished walnut, over a low platform base. The footboard carries the same velvet in a diamond quilt.",
+        brandLogoSrc: "/heritage.jpeg",
+        brandName: "Heaven Furniture",
+        href: "#",
+        meta: [
+            { label: "Material", value: "Cotton velvet, solid walnut" },
+            { label: "Dimensions", value: "King · 193 × 213 cm" },
+            { label: "Price", value: "৳1,45,000" },
+            { label: "Lead time", value: "6–8 weeks" },
+        ],
+    },
+    {
+        id: "royal-blue-carved-sofa-set",
+        category: "seating",
+        imageSrc: "/products/hv-5.jpeg",
+        imageAlt: "Royal Blue Carved Sofa Set",
+        title: "Royal Blue Carved Sofa Set",
+        tag: "Living Room · Seating",
+        description: "Deep-buttoned royal blue velvet on hand-carved mahogany finished in champagne silver leaf. Seat cushions are cut from a woven damask, and the set comes with its matching centre table.",
+        brandLogoSrc: "/heritage.jpeg",
+        brandName: "Heaven Furniture",
+        href: "#",
+        meta: [
+            { label: "Material", value: "Cotton velvet, carved mahogany" },
+            { label: "Dimensions", value: "3+2 seater · 210 & 155 cm" },
+            { label: "Price", value: "৳3,20,000" },
+            { label: "Lead time", value: "10–12 weeks" },
+        ],
+    },
+    {
+        id: "ivory-carved-dining-set",
+        category: "tables",
+        imageSrc: "/products/hv-3.jpeg",
+        imageAlt: "Ivory Carved Dining Set",
+        title: "Ivory Carved Dining Set",
+        tag: "Dining · Tables",
+        description: "An eight-seat set in ivory lacquer with the crest rails and apron carving picked out in gold. The top is a honed cream marble slab, and the chairs are covered in a floral jacquard.",
+        brandLogoSrc: "/heritage.jpeg",
+        brandName: "Heaven Furniture",
+        href: "#",
+        meta: [
+            { label: "Material", value: "Cream marble, lacquered mahogany" },
+            { label: "Dimensions", value: "8-seater · 240 × 110 × 76 cm" },
+            { label: "Price", value: "৳2,85,000" },
+            { label: "Lead time", value: "8–10 weeks" },
+        ],
+    },
+    {
+        id: "marble-teak-dining-table",
+        category: "tables",
+        imageSrc: "/products/hv-8.jpeg",
+        imageAlt: "Marble & Teak Dining Table",
+        title: "Marble & Teak Dining Table",
+        tag: "Dining · Tables",
+        description: "A single cream marble slab with a shaped edge, carried on hand-carved teak cabriole legs. The eight high-back chairs are wrapped in oxblood top-grain leather with brass nailhead trim.",
+        brandLogoSrc: "/heritage.jpeg",
+        brandName: "Heaven Furniture",
+        href: "#",
+        meta: [
+            { label: "Material", value: "Marble, solid teak, top-grain leather" },
+            { label: "Dimensions", value: "8-seater · 230 × 110 × 76 cm" },
+            { label: "Price", value: "৳2,40,000" },
+            { label: "Lead time", value: "7–9 weeks" },
+        ],
+    },
+    {
+        id: "champagne-gilt-sofa-set",
+        category: "seating",
+        imageSrc: "/products/hv-4.jpeg",
+        imageAlt: "Champagne Gilt Sofa Set",
+        title: "Champagne Gilt Sofa Set",
+        tag: "Living Room · Seating",
+        description: "A diamond-quilted jacquard in warm sand over a carved hardwood frame gilded in champagne leaf, with a buttoned back. Three-seater, two armchairs and the glass-topped centre table.",
+        brandLogoSrc: "/heritage.jpeg",
+        brandName: "Heaven Furniture",
+        href: "#",
+        meta: [
+            { label: "Material", value: "Quilted jacquard, gilded hardwood" },
+            { label: "Dimensions", value: "3+1+1 · 200, 90, 90 cm" },
+            { label: "Price", value: "৳2,65,000" },
+            { label: "Lead time", value: "9–11 weeks" },
+        ],
+    },
+    {
+        id: "embroidered-gilt-daybed",
+        category: "seating",
+        imageSrc: "/products/hv-6.jpeg",
+        imageAlt: "Embroidered Gilt Daybed",
+        title: "Embroidered Gilt Daybed",
+        tag: "Living Room · Seating",
+        description: "A three-seat daybed in mushroom velvet inside a gold-leaf carved frame. The back panel and the bolsters are embroidered by hand, one spray of flowers at a time.",
+        brandLogoSrc: "/heritage.jpeg",
+        brandName: "Heaven Furniture",
+        href: "#",
+        meta: [
+            { label: "Material", value: "Velvet, gold-leaf carved mahogany" },
+            { label: "Dimensions", value: "195 × 85 × 95 cm" },
+            { label: "Price", value: "৳1,10,000" },
+            { label: "Lead time", value: "6–8 weeks" },
+        ],
+    },
+    {
+        id: "turned-post-accent-chairs",
+        category: "seating",
+        imageSrc: "/products/hv-2.jpg",
+        imageAlt: "Turned Post Accent Chairs",
+        title: "Turned Post Accent Chairs",
+        tag: "Living Room · Seating",
+        description: "A barrel-backed pair in a sand wool blend, with turned rosewood posts running through the arms and down into the legs. Sold as two, with the scatter cushions.",
+        brandLogoSrc: "/heritage.jpeg",
+        brandName: "Heaven Furniture",
+        href: "#",
+        meta: [
+            { label: "Material", value: "Wool blend, turned rosewood" },
+            { label: "Dimensions", value: "Each · 70 × 72 × 82 cm" },
+            { label: "Price", value: "৳46,000 (pair)" },
+            { label: "Lead time", value: "4–5 weeks" },
+        ],
+    },
+    {
+        id: "woven-hanging-egg-chair",
+        category: "seating",
+        imageSrc: "/products/hv-1.jpg",
+        imageAlt: "Woven Hanging Egg Chair",
+        title: "Woven Hanging Egg Chair",
+        tag: "Balcony · Seating",
+        description: "A hand-woven rattan cocoon hung from a powder-coated steel stand, so it needs no ceiling fixing. Comes with the full cream cushion set.",
+        brandLogoSrc: "/heritage.jpeg",
+        brandName: "Heaven Furniture",
+        href: "#",
+        meta: [
+            { label: "Material", value: "Woven rattan, powder-coated steel" },
+            { label: "Dimensions", value: "105 × 105 × 195 cm" },
+            { label: "Price", value: "৳32,000" },
+            { label: "Lead time", value: "3–4 weeks" },
+        ],
+    },
+    // The three the page opens with. ProductHero shows them full-bleed at the
+    // top, and they're repeated here because this grid is the whole floor, not
+    // the leftovers — but the title, price and description are copied from
+    // MOCK_PRODUCTS in CinematicProductScroll, so if one moves the other has to.
+    {
+        id: "classic-wooden-bed-frame",
+        category: "beds",
+        imageSrc: "/products/bed.jpeg",
+        imageAlt: "Classic Wooden Bed Frame",
+        title: "Classic Wooden Bed Frame",
+        tag: "Bedroom · Beds",
+        description: "A solid wooden bed frame with a panel headboard and white finish, crafted for timeless bedroom comfort. Built in double, queen and king.",
+        brandLogoSrc: "/heritage.jpeg",
+        brandName: "Heaven Furniture",
+        href: "#",
+        meta: [
+            { label: "Material", value: "Solid hardwood, white lacquer" },
+            { label: "Dimensions", value: "Queen · 170 × 210 cm" },
+            { label: "Price", value: "৳48,000" },
+            { label: "Lead time", value: "5–7 weeks" },
+        ],
+    },
+    {
+        id: "modern-tufted-sofa",
+        category: "seating",
+        imageSrc: "/products/sofa.jpeg",
+        imageAlt: "Modern Tufted Sofa",
+        title: "Modern Tufted Sofa",
+        tag: "Living Room · Seating",
+        description: "A plush mid-century inspired sofa featuring deep channel tufting, rounded armrests, and dark wood legs. Two-seater as shown, or three.",
+        brandLogoSrc: "/heritage.jpeg",
+        brandName: "Heaven Furniture",
+        href: "#",
+        meta: [
+            { label: "Material", value: "Channel-tufted velvet, walnut base" },
+            { label: "Dimensions", value: "2-seater · 175 × 90 × 80 cm" },
+            { label: "Price", value: "৳72,000" },
+            { label: "Lead time", value: "6–8 weeks" },
+        ],
+    },
+    {
+        id: "minimalist-vanity-dresser",
+        category: "tables",
+        imageSrc: "/products/vanity.jpeg",
+        imageAlt: "Minimalist Vanity Dresser",
+        title: "Minimalist Vanity Dresser",
+        tag: "Bedroom · Tables",
+        description: "A contemporary bedroom vanity featuring a rounded illuminated mirror and two spacious drawer tiers, with soft-close runners throughout.",
+        brandLogoSrc: "/heritage.jpeg",
+        brandName: "Heaven Furniture",
+        href: "#",
+        meta: [
+            { label: "Material", value: "Oak veneer, LED-lit mirror" },
+            { label: "Dimensions", value: "110 × 45 × 145 cm" },
+            { label: "Price", value: "৳35,000" },
+            { label: "Lead time", value: "4–6 weeks" },
+        ],
+    },
     {
         id: "nordic-oak-armchair",
         category: "seating",
@@ -486,6 +695,17 @@ function useHasHydrated() {
     );
 }
 
+// A bare <img> was fine while every card pulled a pre-sized 900px URL off
+// Unsplash. The workshop's own photographs are 2048px squares straight out of
+// the camera, and a card is ~380px wide — six of those unresized is most of a
+// phone's data allowance for one section, so the resizing goes through
+// next/image instead.
+//
+// motion.create rather than plain <Image>, because the grid card and the open
+// dialog share a `layoutId`: projection needs a forwarded ref and a merged
+// style, and next/image passes both down to the <img> it renders.
+const MotionImage = motion.create(Image);
+
 export function ProductCard({
     imageSrc = "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&q=80&w=1000",
     title = "Untitled Item",
@@ -559,14 +779,16 @@ export function ProductCard({
             >
                 {/* alt is empty on purpose: the title sits in the card as real
                     text and the button below carries it as a label, so describing
-                    the photo again would just read the piece's name three times. */}
-                <motion.img
+                    the photo again would just read the piece's name three times.
+                    `fill` positions the image itself, and the aspect box on the
+                    <li> is what reserves its space before it arrives. */}
+                <MotionImage
                     layoutId={`image-${layoutId}`}
                     src={imageSrc}
                     alt=""
-                    loading="lazy"
-                    decoding="async"
-                    className="absolute inset-0 h-full w-full object-cover"
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                    className="object-cover"
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/60 via-zinc-950/10 to-transparent opacity-90 transition-opacity group-hover:opacity-100" />
@@ -658,11 +880,13 @@ export function ProductCard({
                                     </button>
 
                                     <div className="relative h-64 w-full shrink-0 overflow-hidden md:h-full md:w-1/2">
-                                        <motion.img
+                                        <MotionImage
                                             layoutId={`image-${layoutId}`}
                                             src={imageSrc}
                                             alt=""
-                                            className="h-full w-full object-cover"
+                                            fill
+                                            sizes="(max-width: 768px) 100vw, 450px"
+                                            className="object-cover"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/60 to-transparent md:hidden" />
                                     </div>
@@ -710,21 +934,69 @@ export interface CollectionGridProps extends React.HTMLAttributes<HTMLDivElement
     offers?: Offer[];
 }
 
+// Three columns at the widest breakpoint, so nine is exactly three full rows —
+// a page that ends mid-row reads as a loading state rather than a page break.
+const PAGE_SIZE = 9;
+
+// Same backing-off the navbar uses when it jumps to a section: the pill floats
+// over the page, and a section scrolled flush to y=0 sits underneath it.
+const SECTION_SCROLL_OFFSET = -104;
+
 export const CollectionGrid = React.forwardRef<HTMLDivElement, CollectionGridProps>(
     ({ offers = defaultOffers, className, ...props }, ref) => {
         const [selectedCategory, setSelectedCategory] = React.useState<string>('all');
+        const [page, setPage] = React.useState(1);
+        const sectionRef = React.useRef<HTMLElement>(null);
+        const lenisRef = useLenis();
 
         const filteredOffers = React.useMemo(() => {
             if (selectedCategory === 'all') return offers;
             return offers.filter((o) => o.category === selectedCategory);
         }, [offers, selectedCategory]);
 
-        // Picking a filter changes this section's height by whole grid rows, which
-        // moves everything below it down the document — and every ScrollTrigger
-        // down there (the footer's reveal, the navbar's scroll spy) caches its
-        // start and end as offsets measured once. ScrollTrigger only re-measures
-        // on resize and load, so the recompute has to be asked for by hand. The
-        // carousel never needed this: it stayed one row tall whatever you picked.
+        const pageCount = Math.max(1, Math.ceil(filteredOffers.length / PAGE_SIZE));
+
+        // Clamped rather than trusted: picking a filter resets the page below, but
+        // the `offers` prop can also shrink underneath a page that no longer
+        // exists, and deriving the page instead of correcting it in an effect
+        // means there's never a render where the two disagree.
+        const currentPage = Math.min(page, pageCount);
+        const firstOnPage = (currentPage - 1) * PAGE_SIZE;
+
+        const visibleOffers = React.useMemo(
+            () => filteredOffers.slice(firstOnPage, firstOnPage + PAGE_SIZE),
+            [filteredOffers, firstOnPage]
+        );
+
+        const goToPage = (next: number) => {
+            const target = Math.min(Math.max(next, 1), pageCount);
+            if (target === currentPage) return;
+            setPage(target);
+
+            // Otherwise you click Next at the bottom of the grid and land looking
+            // at the last row of the new page. Lenis owns the scroll position, so
+            // this can't be scrollIntoView — and its cached scroll limit is stale
+            // this far down the document, because ZoomInScroll's pin spacers made
+            // the page taller than the cache knows. Same reason the navbar calls
+            // resize before every jump.
+            const lenis = lenisRef?.current;
+            const section = sectionRef.current;
+            if (!lenis || !section) return;
+
+            lenis.resize();
+            lenis.scrollTo(section, { offset: SECTION_SCROLL_OFFSET, duration: 0.9 });
+        };
+
+        // Picking a filter — or turning a page — changes this section's height by
+        // whole grid rows, which moves everything below it down the document, and
+        // every ScrollTrigger down there (the footer's reveal, the navbar's scroll
+        // spy) caches its start and end as offsets measured once. ScrollTrigger
+        // only re-measures on resize and load, so the recompute has to be asked
+        // for by hand. The carousel never needed this: it stayed one row tall
+        // whatever you picked.
+        //
+        // Keyed on what's actually rendered rather than on the filtered set, since
+        // a page turn changes the row count without changing the filter.
         //
         // Skipped on mount: at that point the page's other triggers are still
         // being built by sibling effects, so a refresh there is a forced layout
@@ -736,10 +1008,11 @@ export const CollectionGrid = React.forwardRef<HTMLDivElement, CollectionGridPro
                 return;
             }
             ScrollTrigger.refresh();
-        }, [filteredOffers]);
+        }, [visibleOffers]);
 
         return (
             <motion.section
+                ref={sectionRef}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-100px' }}
@@ -758,20 +1031,30 @@ export const CollectionGrid = React.forwardRef<HTMLDivElement, CollectionGridPro
                             <h2 className="mt-3 text-4xl font-black uppercase tracking-[-0.06em] text-zinc-950 md:text-6xl">
                                 Featured Collections
                             </h2>
-                            {/* Also the filter's only confirmation. A sighted user
-                                sees the grid reflow; aria-live is what tells
-                                everyone else the set changed, and to what. */}
+                            {/* Also the filter's and the pagination's only
+                                confirmation. A sighted user sees the grid reflow;
+                                aria-live is what tells everyone else the set
+                                changed, and to what. */}
                             <p aria-live="polite" className="mt-4 text-sm text-zinc-500">
-                                {selectedCategory === 'all'
-                                    ? `${offers.length} pieces, each made to order`
-                                    : `${filteredOffers.length} of ${offers.length} pieces`}
+                                {filteredOffers.length === 0
+                                    ? `Nothing in this category · ${offers.length} pieces in all`
+                                    : selectedCategory === 'all'
+                                        ? `Showing ${firstOnPage + 1}–${firstOnPage + visibleOffers.length} of ${offers.length} pieces, each made to order`
+                                        : `Showing ${firstOnPage + 1}–${firstOnPage + visibleOffers.length} of ${filteredOffers.length} pieces in this category`}
                             </p>
                         </div>
 
                         <FilterDisclosure
                             items={FILTER_ITEMS}
                             defaultActiveId="all"
-                            onChange={(id) => setSelectedCategory(id)}
+                            onChange={(id) => {
+                                setSelectedCategory(id);
+                                // Page 3 of everything has no equivalent in a
+                                // four-piece category, and starting a new filter
+                                // part-way through its results reads as missing
+                                // stock rather than as a page you're still on.
+                                setPage(1);
+                            }}
                         />
                     </div>
 
@@ -790,15 +1073,16 @@ export const CollectionGrid = React.forwardRef<HTMLDivElement, CollectionGridPro
                                 </p>
                             </div>
                         ) : (
-                            // Keyed on the category so the reveal replays for the new set;
-                            // each card's own viewport trigger handles the rest. Two
-                            // columns from 640px, three from 1024px — at ~380px wide a
-                            // card in the third column still holds its title on one line.
+                            // Keyed on the category and the page so the reveal
+                            // replays for each new set; each card's own viewport
+                            // trigger handles the rest. Two columns from 640px,
+                            // three from 1024px — at ~380px wide a card in the
+                            // third column still holds its title on one line.
                             <ul
-                                key={selectedCategory}
+                                key={`${selectedCategory}-${currentPage}`}
                                 className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:gap-8 lg:grid-cols-3"
                             >
-                                {filteredOffers.map((offer, index) => (
+                                {visibleOffers.map((offer, index) => (
                                     <ProductCard
                                         key={offer.id}
                                         // Cascades a row left to right at three columns and
@@ -829,9 +1113,11 @@ export const CollectionGrid = React.forwardRef<HTMLDivElement, CollectionGridPro
 
                                                     <div className="rounded-xl border border-zinc-200 bg-zinc-50/60 p-4">
                                                         <div className="flex items-center gap-3">
-                                                            <img
+                                                            <Image
                                                                 src={offer.brandLogoSrc}
                                                                 alt={`${offer.brandName} logo`}
+                                                                width={40}
+                                                                height={40}
                                                                 className="h-10 w-10 rounded-full bg-zinc-200 object-cover"
                                                             />
                                                             <div>
@@ -865,6 +1151,18 @@ export const CollectionGrid = React.forwardRef<HTMLDivElement, CollectionGridPro
                             </ul>
                         )}
                     </div>
+
+                    {/* Outside the grid wrapper, because that div is what the
+                        forwarded ref and any spread props address — a consumer
+                        styling the grid shouldn't catch the controls too. Renders
+                        nothing at all while a category fits on one page. */}
+                    <PaginationWithIconAndLabel
+                        page={currentPage}
+                        pageCount={pageCount}
+                        onPageChange={goToPage}
+                        label="Collection pages"
+                        className="mt-12 border-t border-black/10 pt-8 md:mt-16"
+                    />
                 </div>
             </motion.section>
         );
