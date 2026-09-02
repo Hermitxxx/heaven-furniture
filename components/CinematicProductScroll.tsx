@@ -2,12 +2,14 @@
 
 import React, { useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { ArrowDown, Eye } from "lucide-react"
+import { ArrowDown, Eye, Phone } from "lucide-react"
 import { animate, stagger } from "animejs"
 import Link from "next/link"
-import KineticGrid from "./backgrounds/KineticGrid"
+import TopoField from "./TopoField"
+import ChromeButton from "./ChromeButton"
 import MorphingHeadline, { type HeadlinePhrase } from "./MorphingHeadline"
 import Reveal from "./Reveal"
+import { PHONE_E164 } from "@/lib/contact"
 
 import Bed from '../public/bed.jpeg'
 import Sofa from '../public/sofa.jpeg'
@@ -484,7 +486,30 @@ export function CinematicProductScroll() {
             className="bg-transparent text-foreground antialiased selection:bg-primary selection:text-primary-foreground w-full animate-fade-in"
         >
             {/* Intro Section - Cinematic Version */}
-            <KineticGrid id="home" className="relative h-[100dvh] w-full overflow-hidden" globalColor="monochrome">
+            <section id="home" className="relative h-[100dvh] w-full overflow-hidden bg-background">
+                {/* Backdrop. TopoField ships as a sandboxed iframe running its own
+                    WebGL loop, which makes two things load-bearing here:
+
+                    pointer-events — an iframe swallows wheel events, and Lenis
+                    interpolates the page's scroll from those, so without this the
+                    hero would trap the scroll wherever the cursor sat over it.
+
+                    mode is pinned to "light" rather than "auto" — auto reads the
+                    stale data-theme="dark" on <html>, and would paint the shader's
+                    native white-on-black under this page's near-black type.
+
+                    grid is off: the shader's own 48px rule grid read as graph
+                    paper behind the headline. The drifting contour lines are the
+                    part of the effect worth keeping.
+
+                    Element opacity blends the shader's #eef1f6 paper into the
+                    white section so the hero doesn't read as a grey panel against
+                    the sections below, and softens the contours to something the
+                    headline can sit on top of. */}
+                <div aria-hidden className="absolute inset-0 z-0">
+                    <TopoField mode="light" grid={false} style={{ opacity: 0.55, pointerEvents: "none" }} />
+                </div>
+
                 {/* Light Effects */}
                 <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full animate-pulse"></div>
                 <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-muted-foreground/10 blur-[150px] rounded-full"></div>
@@ -530,26 +555,36 @@ export function CinematicProductScroll() {
                     </div>
                 </div>
 
-                {/* Scroll Indicator. The reveal sits inside the positioned box
-                    rather than on it — the wrapper owns -translate-x-1/2, and a
-                    transform-based variant on the same element would overwrite
-                    it mid-animation. */}
+                {/* Hero CTA. The hairline above it is the old scroll indicator's,
+                    kept because it now points at something — the travelling light
+                    lands on the button. The reveal sits inside the positioned box
+                    rather than on it: the wrapper owns -translate-x-1/2, and a
+                    transform-based variant on the same element would overwrite it
+                    mid-animation.
+
+                    A call, not a form: there's no booking endpoint on a
+                    single-page site, and the number is the one thing the footer
+                    already converts on. */}
                 <div className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2">
                     <Reveal
                         animation="fade"
                         trigger="mount"
                         delay={0.95}
-                        className="flex flex-col items-center gap-4"
+                        className="flex flex-col items-center gap-5"
                     >
                         <div className="w-[1px] h-12 md:h-20 bg-foreground/10 relative overflow-hidden">
                             <div className="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-transparent via-foreground/50 to-transparent animate-scroll-light"></div>
                         </div>
-                        <span className="text-[9px] font-bold text-foreground/40 tracking-normal">
-                            SCROLL DOWN
-                        </span>
+                        <ChromeButton
+                            href={`tel:${PHONE_E164}`}
+                            className="text-[10px] md:text-[11px] z-50 font-bold uppercase tracking-[0.2em]"
+                        >
+                            <Phone className="h-4 w-4 shrink-0" aria-hidden />
+                            Book a free consultation
+                        </ChromeButton>
                     </Reveal>
                 </div>
-            </KineticGrid>
+            </section>
 
             {/* Products - Render ProductHero for each item.
                 The first one carries the #pieces anchor: it's the top of the

@@ -19,7 +19,7 @@ interface NavBarProps {
 }
 
 // Every entry must correspond to an element that actually renders an `id`:
-//   #home        → KineticGrid hero            (CinematicProductScroll)
+//   #home        → TopoField hero              (CinematicProductScroll)
 //   #pieces      → first ProductHero           (CinematicProductScroll)
 //   #about       → "Why choose us" story panels (WhyChooseUs / StoryScroll)
 //   #collections → "Featured Collections"      (Carousel)
