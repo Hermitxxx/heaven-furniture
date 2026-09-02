@@ -5,9 +5,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import {
-  Award,
   Ruler,
-  ShieldCheck,
   Sparkles,
   ArrowUpRight
 } from 'lucide-react';
@@ -206,61 +204,7 @@ export default function FurnitureStoryScroll() {
         </div>
       </FlowSection>
 
-      {/* PAGE 3: Industry Recognition & Trust (2025–2026) */}
-      <FlowSection className="bg-[#0f0e0d] text-white">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-amber-300">
-            <span className="flex h-2 w-2 rounded-full bg-amber-300 animate-pulse" />
-            Chapter 03
-          </div>
-          <span className="font-mono text-sm tracking-widest text-zinc-500">
-            2025 – 2026
-          </span>
-        </div>
-
-        <div className="my-auto max-w-5xl py-12">
-          <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#8a6f59] mb-4">
-            Recognized Industry Leader
-          </p>
-          <h2 className="text-4xl sm:text-6xl lg:text-7xl font-black uppercase tracking-tight text-white leading-[0.95]">
-            Trusted Nationwide. <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-[#D7C3B1] to-[#8a6f59]">
-              Officially Honored.
-            </span>
-          </h2>
-          <p className="mt-8 max-w-2xl text-base sm:text-lg text-zinc-400 leading-relaxed">
-            Inducted into the Chamber of Commerce in 2025 and awarded nationwide recognition by the Bangladesh Furniture Industry Owners Association (BFIOA) in 2026.
-          </p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pt-6 border-t border-zinc-800">
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300">
-              <Award className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-white">BFIOA Recognition</p>
-              <p className="text-[11px] text-zinc-400">Official National Furniture Body Member</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 text-[#D7C3B1]">
-              <ShieldCheck className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-white">Chamber of Commerce</p>
-              <p className="text-[11px] text-zinc-400">Verified & Certified Excellence</p>
-            </div>
-          </div>
-        </div>
-      </FlowSection>
-
-      {/* PAGE 4: the finished-work wall. Cream rather than another near-black:
-          PAGE 3 is #0f0e0d and this was #18181b, a 5% lightness difference that
-          reads as one continuous dark band instead of a new scene. Alternating
-          back also restores the chapter rhythm — dark, cream, dark, cream — and
-          turns the gallery's dark frame into a deliberate window. */}
+      {/* PAGE 3: the finished-work wall. */}
       <FlowSection className="bg-[#f2efe9] text-zinc-900">
         {/* flex-1, not h-full: flow-art-container sets min-h-screen with no
             definite height, so a percentage height here resolves against
@@ -282,7 +226,7 @@ export default function FurnitureStoryScroll() {
             <div>
               <div className="flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-[#8a6f59] mb-2">
                 <span className="flex h-2 w-2 rounded-full bg-zinc-950" />
-                Chapter 04
+                Chapter 03
               </div>
               {/* Same scale as the WhyChooseUs h2 in PAGE 2 — text-4xl/md:text-6xl
                   at tracking-[-0.06em] — so the two chapters read as the same

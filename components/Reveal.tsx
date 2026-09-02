@@ -53,7 +53,7 @@ export interface RevealProps {
   animation?: RevealAnimation;
   /**
    * "view" waits until the element scrolls into sight and matches the
-   * initial/whileInView pattern Carousel, WhyChooseUs and TestimonialsSection
+   * initial/whileInView pattern CollectionGrid, WhyChooseUs and TestimonialsSection
    * already use. "mount" fires on load — the right choice above the fold, where
    * an in-view trigger would fire on the first frame anyway and give you no
    * control over the order things arrive in.

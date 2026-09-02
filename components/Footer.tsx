@@ -17,7 +17,7 @@ if (typeof window !== "undefined") {
 // 1. INLINE STYLES
 // -------------------------------------------------------------------------
 // Colours are hard-coded to the warm palette the rest of the site uses
-// (#8a6f59 clay, #d7c3b1 tan, #f7f5f1 cream — see Features and Carousel)
+// (#8a6f59 clay, #d7c3b1 tan, #f7f5f1 cream — see Features and CollectionGrid)
 // rather than derived from the shadcn tokens. In this project --primary,
 // --secondary and --background resolve to near-black, near-white grey and
 // white, which made the aurora a grey smudge and gave the glass pills white

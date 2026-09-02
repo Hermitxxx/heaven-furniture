@@ -88,9 +88,9 @@ const MD_QUOTE = {
     role: "Managing Director, Heaven Furniture",
 };
 
-// Shell mirrors the Carousel's directly above it — same fade-up on first view,
-// same max-w-7xl gutters, same eyebrow/heading pair — but on white rather than
-// its cream #f7f5f1, so the two don't merge into one long band.
+// Shell mirrors the CollectionGrid's directly above it — same fade-up on first
+// view, same max-w-7xl gutters, same eyebrow/heading pair — but on white rather
+// than its cream #f7f5f1, so the two don't merge into one long band.
 export function TestimonialsSection({ className }: { className?: string }) {
     return (
         <motion.section

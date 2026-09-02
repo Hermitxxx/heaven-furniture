@@ -564,8 +564,17 @@ export function CinematicProductScroll() {
 
                     A call, not a form: there's no booking endpoint on a
                     single-page site, and the number is the one thing the footer
-                    already converts on. */}
-                <div className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2">
+                    already converts on.
+
+                    z-20 has to live on THIS element, not on the button. The
+                    content block above is `z-10 h-full` — a full-viewport pane
+                    over the whole hero, the bottom of which is exactly where
+                    this sits. `-translate-x-1/2` makes this wrapper a stacking
+                    context, so any z-index inside it is resolved against the
+                    wrapper and can't out-stack that pane no matter how high it
+                    goes. The button carried a z-50 that could never have done
+                    anything, and the CTA swallowed every hover and click. */}
+                <div className="absolute bottom-8 md:bottom-12 left-1/2 z-20 -translate-x-1/2">
                     <Reveal
                         animation="fade"
                         trigger="mount"
@@ -577,7 +586,7 @@ export function CinematicProductScroll() {
                         </div>
                         <ChromeButton
                             href={`tel:${PHONE_E164}`}
-                            className="text-[10px] md:text-[11px] z-50 font-bold uppercase tracking-[0.2em]"
+                            className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.2em]"
                         >
                             <Phone className="h-4 w-4 shrink-0" aria-hidden />
                             Book a free consultation

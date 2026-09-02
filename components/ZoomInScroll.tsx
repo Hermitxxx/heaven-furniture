@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Carousel } from './Carousel';
+import { CollectionGrid } from './CollectionGrid';
 import { TestimonialsSection } from './TestimonialsSection';
 import FurnitureStoryScroll from './StoryScroll';
 if (typeof window !== 'undefined') {
@@ -275,15 +275,15 @@ export function ZoomInScroll({
                 </div>
             </div>
 
-            {/* 3. OUTRO — product carousel. Plain div, not <footer>: the page's
-                real footer is CinematicFooter, and two <footer> landmarks in one
-                document leaves assistive tech with no single "end of page".
+            {/* 3. OUTRO — the collections grid. Plain div, not <footer>: the
+                page's real footer is CinematicFooter, and two <footer> landmarks
+                in one document leaves assistive tech with no single "end of page".
                 It also carries the #collections anchor rather than the section
-                inside Carousel, which animates in on a y-transform — measuring
-                a transformed element mid-animation gives the navbar a moving
-                target to scroll to. */}
+                inside CollectionGrid, which animates in on a y-transform —
+                measuring a transformed element mid-animation gives the navbar a
+                moving target to scroll to. */}
             <div id="collections">
-                <Carousel />
+                <CollectionGrid />
             </div>
 
             {/* 4. Social proof, directly after the collections. */}

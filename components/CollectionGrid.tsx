@@ -2,8 +2,10 @@
 
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { motion, AnimatePresence, MotionConfig, type Variants } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ArrowRight, Eye } from 'lucide-react';
+import { motion, AnimatePresence, MotionConfig, useReducedMotion, type Variants } from 'framer-motion';
+import { ArrowRight, Eye } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FaBed, FaChair } from 'react-icons/fa';
 import { MdOutlineTableRestaurant, MdLightbulb } from 'react-icons/md';
 import { BsCheckLg } from 'react-icons/bs';
@@ -11,6 +13,11 @@ import { PiFunnelSimpleBold } from 'react-icons/pi';
 import type { IconType } from 'react-icons';
 import { cn } from '@/lib/utils';
 import { BiCategoryAlt } from 'react-icons/bi';
+import { useLenis } from './SmoothScrollProvider';
+
+if (typeof window !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+}
 
 // --- Types ---
 
@@ -46,11 +53,14 @@ export const FILTER_ITEMS: FilterItem[] = [
     { id: 'lighting', label: 'Lighting', icon: MdLightbulb },
 ];
 
+// Images are requested at 900px wide, not the 1200 the samples used: the widest
+// a card ever renders is ~380px in the three-column grid and ~450px in the
+// detail dialog, and eleven of them mount on a single page.
 export const defaultOffers: Offer[] = [
     {
         id: "nordic-oak-armchair",
         category: "seating",
-        imageSrc: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&q=80&w=1200",
+        imageSrc: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&q=80&w=900",
         imageAlt: "Nordic Oak Armchair",
         title: "Nordic Oak Armchair",
         tag: "Living Room · Seating",
@@ -69,7 +79,7 @@ export const defaultOffers: Offer[] = [
     {
         id: "velvet-boucle-sofa",
         category: "seating",
-        imageSrc: "https://images.unsplash.com/photo-1540574163026-643ea20ade25?auto=format&fit=crop&q=80&w=1200",
+        imageSrc: "https://images.unsplash.com/photo-1540574163026-643ea20ade25?auto=format&fit=crop&q=80&w=900",
         imageAlt: "Velvet Bouclé Sofa",
         title: "Velvet Bouclé Sofa",
         tag: "Living Room · Seating",
@@ -88,7 +98,7 @@ export const defaultOffers: Offer[] = [
     {
         id: "handwoven-rattan-chair",
         category: "seating",
-        imageSrc: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=1200",
+        imageSrc: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=900",
         imageAlt: "Handwoven Rattan Chair",
         title: "Handwoven Rattan Chair",
         tag: "Dining · Seating",
@@ -107,7 +117,7 @@ export const defaultOffers: Offer[] = [
     {
         id: "walnut-coffee-table",
         category: "tables",
-        imageSrc: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=1200",
+        imageSrc: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=900",
         imageAlt: "Walnut Coffee Table",
         title: "Walnut Coffee Table",
         tag: "Living Room · Tables",
@@ -126,7 +136,7 @@ export const defaultOffers: Offer[] = [
     {
         id: "linen-upholstered-bed",
         category: "beds",
-        imageSrc: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&q=80&w=1200",
+        imageSrc: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&q=80&w=900",
         imageAlt: "Linen Upholstered Bed",
         title: "Linen Upholstered Bed",
         tag: "Bedroom · Beds",
@@ -145,7 +155,7 @@ export const defaultOffers: Offer[] = [
     {
         id: "ceramic-table-lamp",
         category: "lighting",
-        imageSrc: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&q=80&w=1200",
+        imageSrc: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&q=80&w=900",
         imageAlt: "Ceramic Table Lamp",
         title: "Ceramic Table Lamp",
         tag: "Lighting · Accents",
@@ -164,7 +174,7 @@ export const defaultOffers: Offer[] = [
     {
         id: "marble-dining-table",
         category: "tables",
-        imageSrc: "https://images.unsplash.com/photo-1615066390971-03e4e1c36ddf?auto=format&fit=crop&q=80&w=1200",
+        imageSrc: "https://images.unsplash.com/photo-1615066390971-03e4e1c36ddf?auto=format&fit=crop&q=80&w=900",
         imageAlt: "Carrara Marble Dining Table",
         title: "Carrara Marble Dining Table",
         tag: "Dining · Tables",
@@ -183,7 +193,7 @@ export const defaultOffers: Offer[] = [
     {
         id: "minimalist-oak-desk",
         category: "tables",
-        imageSrc: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&q=80&w=1200",
+        imageSrc: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&q=80&w=900",
         imageAlt: "Minimalist Writing Desk",
         title: "Minimalist Writing Desk",
         tag: "Office · Tables",
@@ -202,7 +212,7 @@ export const defaultOffers: Offer[] = [
     {
         id: "leather-ottoman-bench",
         category: "seating",
-        imageSrc: "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&q=80&w=1200",
+        imageSrc: "https://images.unsplash.com/photo-1567016432779-094069958ea5?auto=format&fit=crop&q=80&w=900",
         imageAlt: "Aniline Leather Ottoman",
         title: "Aniline Leather Ottoman",
         tag: "Bedroom · Seating",
@@ -221,7 +231,7 @@ export const defaultOffers: Offer[] = [
     {
         id: "minimalist-floor-lamp",
         category: "lighting",
-        imageSrc: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&q=80&w=1200",
+        imageSrc: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&q=80&w=900",
         imageAlt: "Sculptural Floor Lamp",
         title: "Sculptural Floor Lamp",
         tag: "Lighting · Accents",
@@ -240,7 +250,7 @@ export const defaultOffers: Offer[] = [
     {
         id: "sculptural-side-table",
         category: "tables",
-        imageSrc: "https://images.unsplash.com/photo-1532372576444-dda954194ad0?auto=format&fit=crop&q=80&w=1200",
+        imageSrc: "https://images.unsplash.com/photo-1532372576444-dda954194ad0?auto=format&fit=crop&q=80&w=900",
         imageAlt: "Travertine Side Table",
         title: "Travertine Side Table",
         tag: "Living Room · Tables",
@@ -274,6 +284,10 @@ export const FilterDisclosure: React.FC<{
 }> = ({ items = FILTER_ITEMS, defaultActiveId = 'all', onChange }) => {
     const [open, setOpen] = React.useState(false);
     const [active, setActive] = React.useState(defaultActiveId);
+    const rootRef = React.useRef<HTMLDivElement>(null);
+    const panelRef = React.useRef<HTMLDivElement>(null);
+    const triggerRef = React.useRef<HTMLButtonElement>(null);
+    const hasOpened = React.useRef(false);
 
     const activeItem = items.find((i) => i.id === active);
     const ActiveIcon = activeItem ? activeItem.icon : BiCategoryAlt;
@@ -284,14 +298,51 @@ export const FilterDisclosure: React.FC<{
         setTimeout(() => setOpen(false), 220);
     };
 
+    // A panel that only closes by picking something was survivable above a
+    // one-row carousel. Above a grid that runs several screens deep it isn't:
+    // you can scroll the whole collection with it still floating over the cards.
+    React.useEffect(() => {
+        if (!open) return;
+
+        const handlePointerDown = (e: PointerEvent) => {
+            if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+        };
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setOpen(false);
+        };
+
+        document.addEventListener('pointerdown', handlePointerDown);
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('pointerdown', handlePointerDown);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [open]);
+
+    // The trigger and the panel swap places rather than coexisting, so opening
+    // unmounts the element that had focus and drops it on <body> — the next Tab
+    // would restart at the top of the page. Hand focus across the swap in both
+    // directions. `hasOpened` keeps the close branch from stealing focus on the
+    // first render, when the panel has simply never been open.
+    React.useEffect(() => {
+        if (open) {
+            hasOpened.current = true;
+            panelRef.current?.querySelector('button')?.focus();
+        } else if (hasOpened.current) {
+            triggerRef.current?.focus();
+        }
+    }, [open]);
+
     return (
-        <div className="relative flex h-[60px] w-[260px] items-center justify-end">
+        <div ref={rootRef} className="relative flex h-[60px] w-[260px] items-center justify-end">
             <MotionConfig transition={{ type: 'spring', bounce: 0.25, duration: 0.7 }}>
                 <AnimatePresence mode="popLayout" initial={false}>
                     {open ? (
                         <motion.div
                             key="open"
+                            ref={panelRef}
                             layoutId="filter-disclosure"
+                            aria-label="Filter by category"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0, transition: { duration: 0 } }}
@@ -305,12 +356,19 @@ export const FilterDisclosure: React.FC<{
                                 return (
                                     <motion.button
                                         key={item.id}
+                                        type="button"
+                                        // aria-pressed rather than role="menuitemradio":
+                                        // a menu role promises arrow-key navigation that
+                                        // isn't implemented here, and claiming it would
+                                        // put a screen reader into a mode where Tab —
+                                        // the thing that does work — stops being offered.
+                                        aria-pressed={selected}
                                         initial={{ opacity: 0, scale: 1.1, y: 20 }}
                                         animate={{ opacity: 1, scale: 1, y: 0 }}
                                         onClick={() => handleSelect(item.id)}
                                         whileTap={{ scale: 0.98 }}
                                         transition={{ ...SPRING, delay: index * 0.04 }}
-                                        className="flex w-full cursor-pointer items-center justify-between rounded-[14px] px-[12px] py-[8px] transition-colors hover:bg-zinc-100 dark:hover:bg-neutral-800/60"
+                                        className="flex w-full cursor-pointer items-center justify-between rounded-[14px] px-[12px] py-[8px] transition-colors hover:bg-zinc-100 focus-visible:bg-zinc-100 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#8a6f59] dark:hover:bg-neutral-800/60"
                                     >
                                         <div className="flex items-center gap-[16px]">
                                             <Icon className="h-[20px] w-[20px] text-[#8a6f59] dark:text-neutral-400" />
@@ -343,7 +401,11 @@ export const FilterDisclosure: React.FC<{
                     ) : (
                         <div key="close" className="flex items-center gap-2">
                             <motion.button
+                                ref={triggerRef}
+                                type="button"
                                 layoutId="filter-disclosure"
+                                aria-expanded={open}
+                                aria-label={`Filter by category — showing ${activeItem?.label ?? 'all items'}`}
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0, transition: { duration: 0 } }}
@@ -351,12 +413,15 @@ export const FilterDisclosure: React.FC<{
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 style={{ borderRadius: 28 }}
-                                className="z-20 flex h-[52px] w-[52px] cursor-pointer items-center justify-center border border-zinc-200 bg-white shadow-sm hover:bg-zinc-50 dark:border-neutral-800 dark:bg-neutral-900"
+                                className="z-20 flex h-[52px] w-[52px] cursor-pointer items-center justify-center border border-zinc-200 bg-white shadow-sm hover:bg-zinc-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8a6f59] dark:border-neutral-800 dark:bg-neutral-900"
                             >
                                 <PiFunnelSimpleBold className="h-[24px] w-[24px] text-zinc-900 dark:text-neutral-100" />
                             </motion.button>
 
+                            {/* Purely a restatement of what the trigger's label
+                                already says, so it stays out of the a11y tree. */}
                             <motion.div
+                                aria-hidden="true"
                                 initial={{ x: -20, opacity: 0 }}
                                 animate={{ x: 0, opacity: 1 }}
                                 transition={{ type: 'spring', bounce: 0, duration: 0.8 }}
@@ -383,61 +448,138 @@ export const FilterDisclosure: React.FC<{
 
 // --- ProductCard Component ---
 
+// `visible` is a function variant so every card can be handed its own delay.
+// The grid lets each card reveal on its own viewport entry instead of
+// orchestrating them from the container: a single `staggerChildren` up there
+// starts the whole set at once, which across four rows means rows three and
+// four finish animating while they are still below the fold.
 const cardVariants: Variants = {
     hidden: { opacity: 0, y: 56, scale: 0.94 },
-    visible: {
+    visible: (delay: number = 0) => ({
         opacity: 1,
         y: 0,
         scale: 1,
-        transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-    },
+        transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1], delay },
+    }),
 };
+
+// Reduced motion keeps the arrival — a card appearing is information — and drops
+// the travel and the hover lift. Same bargain Reveal makes.
+const REDUCED_CARD_VARIANTS: Variants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.3 } },
+};
+
+// createPortal needs a real document.body, which the server render doesn't have,
+// so the dialog can only be mounted once hydration has happened. This is that
+// check without a setState inside an effect: getServerSnapshot answers false
+// while rendering on the server, getSnapshot answers true once React is running
+// in the browser, and nothing ever subscribes because the answer never changes
+// again. (The `mounted` flag it replaces was the one ESLint error in this file.)
+const NEVER_CHANGES = () => () => { };
+
+function useHasHydrated() {
+    return React.useSyncExternalStore(
+        NEVER_CHANGES,
+        () => true,
+        () => false
+    );
+}
 
 export function ProductCard({
     imageSrc = "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&q=80&w=1000",
     title = "Untitled Item",
     subtitle = "Category",
     content,
+    revealDelay = 0,
 }: {
     imageSrc?: string;
     title?: string;
     subtitle?: string;
     content?: React.ReactNode;
+    /** Seconds to hold the entrance back by, so a grid row doesn't land flat. */
+    revealDelay?: number;
 }) {
     const [isOpen, setIsOpen] = React.useState(false);
-    const [mounted, setMounted] = React.useState(false);
+    const mounted = useHasHydrated();
+    const shouldReduceMotion = useReducedMotion();
+    const lenisRef = useLenis();
+    const triggerRef = React.useRef<HTMLButtonElement>(null);
+    const closeRef = React.useRef<HTMLButtonElement>(null);
 
     const layoutId = React.useId() + `-${title.replace(/\s+/g, "-").toLowerCase()}`;
+    const titleId = `${layoutId}-title`;
 
+    // What the open dialog needs to be usable without a mouse: Escape closes it,
+    // focus starts on the close button and returns to the card that opened it
+    // (otherwise it lands on <body> and the next Tab restarts at the top of the
+    // page), and Lenis stops so the wheel doesn't scroll the grid behind the
+    // backdrop. Opening a card and finding the page had moved underneath was
+    // easy to miss with one row of cards and unmissable with twelve.
     React.useEffect(() => {
-        setMounted(true);
-    }, []);
+        if (!isOpen) return;
+
+        const lenis = lenisRef?.current;
+        // Captured now rather than read in the cleanup: it's the same DOM node
+        // either way, and reading a ref during cleanup is what the exhaustive-deps
+        // rule warns about.
+        const trigger = triggerRef.current;
+
+        lenis?.stop();
+        closeRef.current?.focus();
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setIsOpen(false);
+        };
+        document.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+            lenis?.start();
+            trigger?.focus();
+        };
+    }, [isOpen, lenisRef]);
 
     return (
         <>
-            <motion.div
-                variants={cardVariants}
+            <motion.li
+                variants={shouldReduceMotion ? REDUCED_CARD_VARIANTS : cardVariants}
+                custom={revealDelay}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
                 layoutId={layoutId}
-                onClick={() => setIsOpen(true)}
-                className="group relative h-[440px] w-[340px] flex-shrink-0 snap-start cursor-pointer overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-sm"
-                whileHover={{ y: -8 }}
+                // A ratio rather than the old fixed 340×440: in a grid the width
+                // comes from the column, and the ratio is what keeps every row
+                // the same height without measuring anything. It also reserves
+                // each image's box up front, so lazy loading can't reflow the grid.
+                className="group relative aspect-[4/5] w-full list-none overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-sm"
+                whileHover={shouldReduceMotion ? undefined : { y: -8 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
+                {/* alt is empty on purpose: the title sits in the card as real
+                    text and the button below carries it as a label, so describing
+                    the photo again would just read the piece's name three times. */}
                 <motion.img
                     layoutId={`image-${layoutId}`}
                     src={imageSrc}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
                     className="absolute inset-0 h-full w-full object-cover"
-                    variants={{ hover: { scale: 1.05 } }}
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/60 via-zinc-950/10 to-transparent opacity-90 transition-opacity group-hover:opacity-100" />
 
-                <div className="absolute right-4 top-4 z-10 flex items-center gap-1.5 rounded-full border border-white/20 bg-zinc-950/50 px-3 py-1.5 text-[11px] font-medium text-white opacity-0 backdrop-blur-md transition-all duration-300 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 shadow-md">
+                <div
+                    aria-hidden="true"
+                    className="absolute right-4 top-4 z-10 flex items-center gap-1.5 rounded-full border border-white/20 bg-zinc-950/50 px-3 py-1.5 text-[11px] font-medium text-white opacity-0 backdrop-blur-md transition-all duration-300 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0 shadow-md"
+                >
                     <Eye className="h-3.5 w-3.5 text-[#D7C3B1]" />
-                    <span>Click for details</span>
+                    <span>View details</span>
                 </div>
 
-                <div className="absolute bottom-0 left-0 w-full translate-y-2 p-6 transition-transform duration-300 group-hover:translate-y-0">
+                <div className="absolute bottom-0 left-0 w-full translate-y-2 p-6 transition-transform duration-300 group-hover:translate-y-0 group-focus-within:translate-y-0">
                     {subtitle && (
                         <motion.p
                             layoutId={`subtitle-${layoutId}`}
@@ -453,7 +595,25 @@ export function ProductCard({
                         {title}
                     </motion.h3>
                 </div>
-            </motion.div>
+
+                {/* The whole tile is still the target, but as a real button rather
+                    than a click handler on the div — that's what makes it reachable
+                    by Tab and operable with Enter and Space. It's stretched over
+                    the art instead of wrapping it because a <button> may not
+                    contain a heading.
+
+                    The focus ring is two strokes, cream over near-black, because
+                    it is drawn on top of a photograph: a single mid-tone ring in
+                    the site's clay disappears against a light sofa and a dark
+                    walnut alike, and 2.4.11 wants 3:1 against whatever it lands on. */}
+                <button
+                    ref={triggerRef}
+                    type="button"
+                    onClick={() => setIsOpen(true)}
+                    aria-label={`${title} — view details`}
+                    className="absolute inset-0 z-20 cursor-pointer rounded-2xl focus-visible:shadow-[inset_0_0_0_4px_#f7f5f1] focus-visible:outline-2 focus-visible:outline-offset-[-6px] focus-visible:outline-zinc-950"
+                />
+            </motion.li>
 
             {mounted &&
                 createPortal(
@@ -465,15 +625,22 @@ export function ProductCard({
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}
                                     onClick={() => setIsOpen(false)}
+                                    aria-hidden="true"
                                     className="absolute inset-0 bg-zinc-950/60 backdrop-blur-md"
                                 />
                                 <motion.div
                                     layoutId={layoutId}
+                                    role="dialog"
+                                    aria-modal="true"
+                                    aria-labelledby={titleId}
                                     className="relative z-10 flex h-[80vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl md:flex-row"
                                 >
                                     <button
+                                        ref={closeRef}
+                                        type="button"
                                         onClick={() => setIsOpen(false)}
-                                        className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200 bg-white/50 text-zinc-950 backdrop-blur-sm transition-colors hover:bg-zinc-100"
+                                        aria-label="Close details"
+                                        className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200 bg-white/50 text-zinc-950 backdrop-blur-sm transition-colors hover:bg-zinc-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8a6f59]"
                                     >
                                         <svg
                                             width="16"
@@ -494,6 +661,7 @@ export function ProductCard({
                                         <motion.img
                                             layoutId={`image-${layoutId}`}
                                             src={imageSrc}
+                                            alt=""
                                             className="h-full w-full object-cover"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/60 to-transparent md:hidden" />
@@ -509,6 +677,7 @@ export function ProductCard({
                                             </motion.p>
                                         )}
                                         <motion.h3
+                                            id={titleId}
                                             layoutId={`title-${layoutId}`}
                                             className="mb-6 border-b border-zinc-200 pb-4 text-2xl font-black tracking-tight text-zinc-950 sm:text-3xl"
                                         >
@@ -535,15 +704,14 @@ export function ProductCard({
     );
 }
 
-// --- OfferCarousel Component ---
+// --- CollectionGrid Component ---
 
-export interface OfferCarouselProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CollectionGridProps extends React.HTMLAttributes<HTMLDivElement> {
     offers?: Offer[];
 }
 
-export const OfferCarousel = React.forwardRef<HTMLDivElement, OfferCarouselProps>(
+export const CollectionGrid = React.forwardRef<HTMLDivElement, CollectionGridProps>(
     ({ offers = defaultOffers, className, ...props }, ref) => {
-        const scrollContainerRef = React.useRef<HTMLDivElement>(null);
         const [selectedCategory, setSelectedCategory] = React.useState<string>('all');
 
         const filteredOffers = React.useMemo(() => {
@@ -551,16 +719,24 @@ export const OfferCarousel = React.forwardRef<HTMLDivElement, OfferCarouselProps
             return offers.filter((o) => o.category === selectedCategory);
         }, [offers, selectedCategory]);
 
-        const scroll = (direction: 'left' | 'right') => {
-            if (scrollContainerRef.current) {
-                const { current } = scrollContainerRef;
-                const scrollAmount = current.clientWidth * 0.8;
-                current.scrollBy({
-                    left: direction === 'left' ? -scrollAmount : scrollAmount,
-                    behavior: 'smooth',
-                });
+        // Picking a filter changes this section's height by whole grid rows, which
+        // moves everything below it down the document — and every ScrollTrigger
+        // down there (the footer's reveal, the navbar's scroll spy) caches its
+        // start and end as offsets measured once. ScrollTrigger only re-measures
+        // on resize and load, so the recompute has to be asked for by hand. The
+        // carousel never needed this: it stayed one row tall whatever you picked.
+        //
+        // Skipped on mount: at that point the page's other triggers are still
+        // being built by sibling effects, so a refresh there is a forced layout
+        // for nothing.
+        const isFirstRender = React.useRef(true);
+        React.useEffect(() => {
+            if (isFirstRender.current) {
+                isFirstRender.current = false;
+                return;
             }
-        };
+            ScrollTrigger.refresh();
+        }, [filteredOffers]);
 
         return (
             <motion.section
@@ -582,6 +758,14 @@ export const OfferCarousel = React.forwardRef<HTMLDivElement, OfferCarouselProps
                             <h2 className="mt-3 text-4xl font-black uppercase tracking-[-0.06em] text-zinc-950 md:text-6xl">
                                 Featured Collections
                             </h2>
+                            {/* Also the filter's only confirmation. A sighted user
+                                sees the grid reflow; aria-live is what tells
+                                everyone else the set changed, and to what. */}
+                            <p aria-live="polite" className="mt-4 text-sm text-zinc-500">
+                                {selectedCategory === 'all'
+                                    ? `${offers.length} pieces, each made to order`
+                                    : `${filteredOffers.length} of ${offers.length} pieces`}
+                            </p>
                         </div>
 
                         <FilterDisclosure
@@ -591,100 +775,100 @@ export const OfferCarousel = React.forwardRef<HTMLDivElement, OfferCarouselProps
                         />
                     </div>
 
-                    <div ref={ref} className="group relative w-full" {...props}>
-                        <button
-                            onClick={() => scroll('left')}
-                            className="absolute left-0 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200 bg-white/90 text-zinc-950 opacity-0 shadow-md backdrop-blur-sm transition-opacity duration-300 hover:bg-white group-hover:opacity-100 disabled:opacity-0"
-                            aria-label="Scroll Left"
-                        >
-                            <ChevronLeft className="h-6 w-6" />
-                        </button>
+                    <div ref={ref} className="w-full" {...props}>
+                        {filteredOffers.length === 0 ? (
+                            <div
+                                role="status"
+                                className="rounded-2xl border border-dashed border-[#8a6f59]/30 px-6 py-16 text-center"
+                            >
+                                <p className="text-base font-semibold text-zinc-950">
+                                    Nothing on the floor in this category
+                                </p>
+                                <p className="mx-auto mt-2 max-w-sm text-sm text-zinc-500">
+                                    Everything here is built to order, so most pieces start as a
+                                    conversation. Tell us what the room needs.
+                                </p>
+                            </div>
+                        ) : (
+                            // Keyed on the category so the reveal replays for the new set;
+                            // each card's own viewport trigger handles the rest. Two
+                            // columns from 640px, three from 1024px — at ~380px wide a
+                            // card in the third column still holds its title on one line.
+                            <ul
+                                key={selectedCategory}
+                                className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:gap-8 lg:grid-cols-3"
+                            >
+                                {filteredOffers.map((offer, index) => (
+                                    <ProductCard
+                                        key={offer.id}
+                                        // Cascades a row left to right at three columns and
+                                        // still offsets neighbours at two. At one column it
+                                        // barely matters — each card is its own scroll event.
+                                        revealDelay={(index % 3) * 0.08}
+                                        imageSrc={offer.imageSrc}
+                                        title={offer.title}
+                                        subtitle={offer.tag}
+                                        content={
+                                            offer.content || (
+                                                <div className="flex flex-col gap-6">
+                                                    <p className="text-zinc-600">{offer.description}</p>
 
-                        <motion.div
-                            key={selectedCategory}
-                            ref={scrollContainerRef}
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true, amount: 0.2 }}
-                            transition={{ staggerChildren: 0.09 }}
-                            className="flex space-x-6 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory scrollbar-none [scrollbar-width:none] [-ms-overflow-style:none]"
-                        >
-                            {filteredOffers.map((offer) => (
-                                <ProductCard
-                                    key={offer.id}
-                                    imageSrc={offer.imageSrc}
-                                    title={offer.title}
-                                    subtitle={offer.tag}
-                                    content={
-                                        offer.content || (
-                                            <div className="flex flex-col gap-6">
-                                                <p className="text-zinc-600">{offer.description}</p>
+                                                    {offer.meta && offer.meta.length > 0 && (
+                                                        <dl className="text-xs">
+                                                            {offer.meta.map((row) => (
+                                                                <div
+                                                                    key={row.label}
+                                                                    className="flex justify-between border-b border-zinc-200/80 py-2.5"
+                                                                >
+                                                                    <dt className="text-zinc-500">{row.label}</dt>
+                                                                    <dd className="font-semibold text-zinc-950">{row.value}</dd>
+                                                                </div>
+                                                            ))}
+                                                        </dl>
+                                                    )}
 
-                                                {offer.meta && offer.meta.length > 0 && (
-                                                    <dl className="text-xs">
-                                                        {offer.meta.map((row) => (
-                                                            <div
-                                                                key={row.label}
-                                                                className="flex justify-between border-b border-zinc-200/80 py-2.5"
-                                                            >
-                                                                <dt className="text-zinc-500">{row.label}</dt>
-                                                                <dd className="font-semibold text-zinc-950">{row.value}</dd>
+                                                    <div className="rounded-xl border border-zinc-200 bg-zinc-50/60 p-4">
+                                                        <div className="flex items-center gap-3">
+                                                            <img
+                                                                src={offer.brandLogoSrc}
+                                                                alt={`${offer.brandName} logo`}
+                                                                className="h-10 w-10 rounded-full bg-zinc-200 object-cover"
+                                                            />
+                                                            <div>
+                                                                <p className="font-semibold text-zinc-950">{offer.brandName}</p>
+                                                                {offer.promoCode && (
+                                                                    <p className="text-xs text-zinc-500">
+                                                                        Code:{' '}
+                                                                        <span className="font-mono font-bold text-[#8a6f59]">
+                                                                            {offer.promoCode}
+                                                                        </span>
+                                                                    </p>
+                                                                )}
                                                             </div>
-                                                        ))}
-                                                    </dl>
-                                                )}
-
-                                                <div className="rounded-xl border border-zinc-200 bg-zinc-50/60 p-4">
-                                                    <div className="flex items-center gap-3">
-                                                        <img
-                                                            src={offer.brandLogoSrc}
-                                                            alt={`${offer.brandName} logo`}
-                                                            className="h-10 w-10 rounded-full bg-zinc-200 object-cover"
-                                                        />
-                                                        <div>
-                                                            <p className="font-semibold text-zinc-950">{offer.brandName}</p>
-                                                            {offer.promoCode && (
-                                                                <p className="text-xs text-zinc-500">
-                                                                    Code:{' '}
-                                                                    <span className="font-mono font-bold text-[#8a6f59]">
-                                                                        {offer.promoCode}
-                                                                    </span>
-                                                                </p>
-                                                            )}
                                                         </div>
                                                     </div>
+
+                                                    {offer.href && (
+                                                        <a
+                                                            href={offer.href}
+                                                            className="mt-2 flex items-center justify-center gap-2 rounded-lg bg-zinc-950 px-5 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-all hover:bg-[#8a6f59]"
+                                                        >
+                                                            Explore Piece
+                                                            <ArrowRight className="h-4 w-4" />
+                                                        </a>
+                                                    )}
                                                 </div>
-
-                                                {offer.href && (
-
-                                                    <a href={offer.href}
-                                                        className="mt-2 flex items-center justify-center gap-2 rounded-lg bg-zinc-950 px-5 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-all hover:bg-[#8a6f59]"
-                                                    >
-                                                        Explore Piece
-                                                        <ArrowRight className="h-4 w-4" />
-                                                    </a>
-                                                )}
-                                            </div>
-                                        )
-                                    }
-                                />
-                            ))}
-                        </motion.div>
-
-                        <button
-                            onClick={() => scroll('right')}
-                            className="absolute right-0 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-zinc-200 bg-white/90 text-zinc-950 opacity-0 shadow-md backdrop-blur-sm transition-opacity duration-300 hover:bg-white group-hover:opacity-100 disabled:opacity-0"
-                            aria-label="Scroll Right"
-                        >
-                            <ChevronRight className="h-6 w-6" />
-                        </button>
+                                            )
+                                        }
+                                    />
+                                ))}
+                            </ul>
+                        )}
                     </div>
-                </div >
-            </motion.section >
+                </div>
+            </motion.section>
         );
     }
 );
 
-OfferCarousel.displayName = 'OfferCarousel';
-
-export const Carousel = OfferCarousel;
+CollectionGrid.displayName = 'CollectionGrid';
