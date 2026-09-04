@@ -5,7 +5,6 @@ import Image from "next/image"
 import { ArrowDown, Eye } from "lucide-react"
 import { animate, stagger } from "animejs"
 import Link from "next/link"
-import { AnimeNavBar } from "./Navbar"
 import TextMorph from "./ui/text-morph"
 
 // 1. Mock Products Data
