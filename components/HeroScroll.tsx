@@ -5,7 +5,9 @@ import Image from "next/image"
 import { ArrowDown, Eye } from "lucide-react"
 import { animate, stagger } from "animejs"
 import Link from "next/link"
-import TextMorph from "./ui/text-morph"
+import { AnimatePresence, motion } from "motion/react"
+import TopoField from "./TopoField"
+import { TextAnimate } from "./ui/text-animate"
 
 // 1. Mock Products Data
 const MOCK_PRODUCTS = [
@@ -379,6 +381,11 @@ function ProductHero({ product, reversed = false }: { product: typeof MOCK_PRODU
 
 // 4. Main Unified Mock Component
 export function HeroScroll() {
+    const introPhrases = [
+        "DIVINE ELEGANCE",
+        "REFINED LUXURY",
+        "ELEVATED COMFORT",
+    ]
     const finalSubtitle = "EST. 2024"
     const finalDescription = "We design a timeless lifestyle beyond clothing. Where minimalism meets luxury."
     const finalButtonText = "View Collection"
@@ -389,6 +396,15 @@ export function HeroScroll() {
     const scrollIndicatorRef = useRef<HTMLDivElement>(null)
     const finalCollectionRef = useRef<HTMLDivElement>(null)
     const animeTriggered = useRef(false)
+    const [introPhraseIndex, setIntroPhraseIndex] = useState(0)
+
+    useEffect(() => {
+        const timer = window.setInterval(() => {
+            setIntroPhraseIndex((current) => (current + 1) % introPhrases.length)
+        }, 3200)
+
+        return () => window.clearInterval(timer)
+    }, [introPhrases.length])
 
     useEffect(() => {
         if (!finalCollectionRef.current) return
@@ -480,13 +496,24 @@ export function HeroScroll() {
         }
     }, [])
 
+    const mainTitleParts = introPhrases[introPhraseIndex].split(" ")
+    const mainTitleFirst = mainTitleParts[0]
+    const mainTitleRest = mainTitleParts.slice(1).join(" ")
+
     return (
         <div
             ref={containerRef}
             className="bg-transparent text-foreground antialiased selection:bg-primary selection:text-primary-foreground w-full animate-fade-in"
         >
             {/* Intro Section - Cinematic Version */}
-            <section className="relative h-[100dvh] w-full flex flex-col justify-center items-center overflow-hidden bg-transparent">
+            <section className="relative isolate h-[100dvh] w-full flex flex-col justify-center items-center overflow-hidden bg-transparent">
+
+                <TopoField
+                    mode="light"
+                    speed={0.35}
+                    opacity={0.3}
+                    className="pointer-events-none absolute inset-0 z-0"
+                />
 
                 {/* Light Effects */}
                 {/* <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full animate-pulse"></div>
@@ -496,34 +523,77 @@ export function HeroScroll() {
                 <div className="relative z-10 text-center px-6 -mt-16 md:-mt-10 w-full flex flex-col items-center justify-center">
                     <div className="overflow-hidden mb-4 md:mb-6 w-full flex justify-center">
                         <span
-                            className="block text-[9px] md:text-[10px] font-black text-muted-foreground uppercase reveal text-center tracking-[0.3em] md:tracking-[0.8em] ps-[0.3em] md:ps-[0.8em]"
-                            style={{ animationDelay: "0.2s" }}
+                            className="block text-[9px] md:text-[10px] font-black text-muted-foreground uppercase text-center tracking-[0.3em] md:tracking-[0.8em] ps-[0.3em] md:ps-[0.8em]"
                         >
-                            {finalSubtitle}
+                            <TextAnimate
+                                as="span"
+                                by="character"
+                                animation="blurInDown"
+                                startOnView={false}
+                                delay={0.2}
+                                duration={0.6}
+                            >
+                                {finalSubtitle}
+                            </TextAnimate>
                         </span>
                     </div>
 
-                    <h1 className="text-6xl md:text-[8rem] lg:text-[10rem] font-black leading-[0.85] text-foreground w-full flex items-center justify-center text-center tracking-tighter">
-                        <TextMorph
-                            words={[
-                                "DIVINE ELEGANCE",
-                                "REFINED LUXURY",
-                                "ELEVATED COMFORT",
-                            ]}
-                            interval={2600}
-                            morphDuration={680}
-                            className="font-[Helvetica,Arial,sans-serif] uppercase"
-                            splitLines
-                            secondLineClassName="italic font-light text-muted-foreground"
-                        />
+                    <h1 className="text-6xl md:text-[8rem] lg:text-[10rem] font-black leading-[0.85] text-foreground w-full flex flex-col items-center justify-center text-center tracking-tighter">
+                        <AnimatePresence mode="wait" initial={false}>
+                            <motion.div
+                                key={introPhrases[introPhraseIndex]}
+                                className="flex w-full flex-col items-center"
+                                initial={{ opacity: 0, filter: "blur(8px)", y: 18 }}
+                                animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+                                exit={{ opacity: 0, filter: "blur(8px)", y: -18 }}
+                                transition={{ duration: 0.45, ease: "easeInOut" }}
+                            >
+                                <div className="overflow-hidden w-full flex justify-center">
+                                    <span className="block text-center">
+                                        <TextAnimate
+                                            as="span"
+                                            by="character"
+                                            animation="blurInUp"
+                                            startOnView={false}
+                                            delay={0.1}
+                                            duration={0.8}
+                                        >
+                                            {mainTitleFirst}
+                                        </TextAnimate>
+                                    </span>
+                                </div>
+                                <div className="overflow-hidden mt-2 w-full flex justify-center">
+                                    <span className="block italic font-light text-muted-foreground text-center">
+                                        <TextAnimate
+                                            as="span"
+                                            by="character"
+                                            animation="blurInUp"
+                                            startOnView={false}
+                                            delay={0.2}
+                                            duration={0.8}
+                                        >
+                                            {mainTitleRest}
+                                        </TextAnimate>
+                                    </span>
+                                </div>
+                            </motion.div>
+                        </AnimatePresence>
                     </h1>
 
                     <div className="mt-6 md:mt-12 overflow-hidden w-full flex justify-center">
                         <p
-                            className="text-muted-foreground text-center text-sm md:text-base max-w-lg font-light leading-relaxed tracking-wide reveal"
-                            style={{ animationDelay: "0.8s" }}
+                            className="text-muted-foreground text-center text-sm md:text-base max-w-lg font-light leading-relaxed tracking-wide"
                         >
-                            {finalDescription}
+                            <TextAnimate
+                                as="span"
+                                by="word"
+                                animation="fadeIn"
+                                startOnView={false}
+                                delay={0.8}
+                                duration={0.6}
+                            >
+                                {finalDescription}
+                            </TextAnimate>
                         </p>
                     </div>
                 </div>
