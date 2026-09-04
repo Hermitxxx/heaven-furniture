@@ -175,7 +175,7 @@ function MinimalProductCard({ product }: { product: typeof MOCK_PRODUCTS[0] }) {
 }
 
 // 3. Product Hero Component
-function ProductHero({ product, reversed = false }: { product: typeof MOCK_PRODUCTS[0]; reversed?: boolean }) {
+function ProductHero({ product, reversed = false, id }: { product: typeof MOCK_PRODUCTS[0]; reversed?: boolean; id?: string }) {
     const sectionRef = useRef<HTMLDivElement>(null)
     const fullImageUrl = product.thumbnail ?? ""
 
@@ -245,6 +245,7 @@ function ProductHero({ product, reversed = false }: { product: typeof MOCK_PRODU
     return (
         <div
             ref={sectionRef}
+            id={id}
             className="scroll-section relative h-auto md:h-[250vh] w-full group"
         >
             <div className="relative md:sticky md:top-0 md:left-0 w-full h-auto md:h-screen overflow-hidden bg-transparent">
@@ -509,7 +510,7 @@ export function HeroScroll() {
             className="bg-transparent text-foreground antialiased selection:bg-primary selection:text-primary-foreground w-full animate-fade-in"
         >
             {/* Intro Section - Cinematic Version */}
-            <section className="relative isolate h-[100dvh] w-full flex flex-col justify-center items-center overflow-hidden bg-transparent">
+            <section id="home" className="relative isolate h-[100dvh] w-full flex flex-col justify-center items-center overflow-hidden bg-transparent">
 
                 <TopoField
                     mode="light"
@@ -604,7 +605,7 @@ export function HeroScroll() {
 
             {/* Products - Render ProductHero for each item */}
             {MOCK_PRODUCTS.map((product, index) => (
-                <ProductHero key={product.id} product={product} reversed={index % 2 !== 0} />
+                <ProductHero key={product.id} id={index === 0 ? "pieces" : undefined} product={product} reversed={index % 2 !== 0} />
             ))}
 
             {/* Summary Horizontal Collection - Using the same items */}
