@@ -8,47 +8,50 @@ import Link from "next/link"
 import { AnimatePresence, motion } from "motion/react"
 import TopoField from "./TopoField"
 import { TextAnimate } from "./ui/text-animate"
+import Bed from '../public/products/bed.jpeg'
+import Sofa from '../public/products/sofa.jpeg'
+import Vanity from '../public/products/vanity.jpeg'
 
 // 1. Mock Products Data
 const MOCK_PRODUCTS = [
     {
         id: "prod_1",
-        title: "Minimalist Trench Coat",
-        handle: "minimalist-trench-coat",
-        thumbnail: "https://cdn.21st.dev/assets/mirror/7b/7bdd822b857c81ee10d17ffbe96e564b64ba8415ebac09dceab595379bdfb817.jpg",
-        description: "A timeless outer layer designed with absolute minimalism, premium waterproof cotton, and a classic silhouette.",
+        title: "Classic Wooden Bed Frame",
+        handle: "wooden-bed-frame",
+        thumbnail: Bed,
+        description: "A solid wooden bed frame with a panel headboard and white finish, crafted for timeless bedroom comfort.",
         collection: {
-            title: "Studio Collection"
+            title: "Heaven Furniture"
         },
-        price: "$299.00",
+        price: "৳ 72,000",
         colors: ["#E1D8CE", "#1E1E1E", "#3A4F41"],
-        sizes: ["S", "M", "L", "XL"]
+        sizes: ["Queen", "KING"]
     },
     {
         id: "prod_2",
-        title: "Minimalist Silk Dress",
-        handle: "minimalist-silk-dress",
-        thumbnail: "https://cdn.21st.dev/assets/mirror/d6/d6ae0729bb1d16162415252933f8369e9f5f8326bf243b386663e8103d534e71.jpg",
-        description: "An elegant midi dress crafted from 100% organic mulberry silk, featuring a delicate drape and a refined scoop neckline.",
+        title: "Modern Tufted Sofa",
+        handle: "modern-tufted-sofa",
+        thumbnail: Sofa,
+        description: "A plush mid-century inspired sofa featuring deep channel tufting, rounded armrests, and dark wood legs.",
         collection: {
-            title: "Tailored Studio"
+            title: "Heaven Furniture"
         },
-        price: "$279.00",
+        price: "৳ 35,000",
         colors: ["#E1D8CE", "#1E1E1E", "#C2B280"],
-        sizes: ["XS", "S", "M", "L"]
+        sizes: ["2-Seater", "3-Seater"]
     },
     {
         id: "prod_3",
-        title: "Oversized Cashmere Knit",
-        handle: "oversized-cashmere-knit",
-        thumbnail: "https://cdn.21st.dev/assets/mirror/61/6154958e9df110914005256ff2319d43a2c2e0fc8bb54e9f8bce7b91fdce5df1.jpg",
-        description: "An incredibly soft, oversized sweater knit from pure Mongolian cashmere, designed for effortless layering.",
+        title: "Minimalist Vanity Dresser",
+        handle: "minimalist-vanity-dresser",
+        thumbnail: Vanity,
+        description: "A contemporary bedroom vanity featuring a rounded illuminated mirror and two spacious drawer tiers.",
         collection: {
-            title: "Essentials"
+            title: "Heaven Furniture"
         },
-        price: "$199.00",
+        price: "৳ 42,000",
         colors: ["#D7C4B7", "#1E1E1E", "#E6E6E6"],
-        sizes: ["S", "M", "L"]
+        sizes: ["Standard"]
     }
 ]
 
