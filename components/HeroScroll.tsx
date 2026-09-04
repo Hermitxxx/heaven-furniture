@@ -5,6 +5,7 @@ import Image from "next/image"
 import { ArrowDown, Eye } from "lucide-react"
 import { animate, stagger } from "animejs"
 import Link from "next/link"
+import { AnimeNavBar } from "./Navbar"
 
 // 1. Mock Products Data
 const MOCK_PRODUCTS = [
@@ -493,11 +494,11 @@ export function HeroScroll() {
             <section className="relative h-[100dvh] w-full flex flex-col justify-center items-center overflow-hidden bg-transparent">
 
                 {/* Light Effects */}
-                <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full animate-pulse"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-muted-foreground/10 blur-[150px] rounded-full"></div>
+                {/* <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full animate-pulse"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-muted-foreground/10 blur-[150px] rounded-full"></div> */}
 
                 {/* Content */}
-                <div className="relative z-10 text-center px-6 -mt-16 md:-mt-32 w-full flex flex-col items-center justify-center">
+                <div className="relative z-10 text-center px-6 -mt-16 md:-mt-10 w-full flex flex-col items-center justify-center">
                     <div className="overflow-hidden mb-4 md:mb-6 w-full flex justify-center">
                         <span
                             className="block text-[9px] md:text-[10px] font-black text-muted-foreground uppercase reveal text-center tracking-[0.3em] md:tracking-[0.8em] ps-[0.3em] md:ps-[0.8em]"
@@ -507,7 +508,7 @@ export function HeroScroll() {
                         </span>
                     </div>
 
-                    <h1 className="text-4xl sm:text-6xl md:text-[8rem] lg:text-[10rem] font-black leading-[0.85] text-foreground w-full flex flex-col items-center justify-center text-center tracking-tighter">
+                    <h1 className="text-6xl md:text-[8rem] lg:text-[10rem] font-black leading-[0.85] text-foreground w-full flex flex-col items-center justify-center text-center tracking-tighter">
                         <div className="overflow-hidden w-full flex justify-center">
                             <span
                                 className="block reveal text-center"
@@ -534,19 +535,6 @@ export function HeroScroll() {
                             {finalDescription}
                         </p>
                     </div>
-                </div>
-
-                {/* Scroll Indicator */}
-                <div
-                    className="absolute bottom-8 md:bottom-12 flex flex-col items-center gap-4 reveal"
-                    style={{ animationDelay: "1.2s" }}
-                >
-                    <div className="w-[1px] h-12 md:h-20 bg-foreground/10 relative overflow-hidden">
-                        <div className="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-transparent via-foreground/50 to-transparent animate-scroll-light"></div>
-                    </div>
-                    <span className="text-[9px] font-bold text-foreground/40 tracking-normal">
-                        SCROLL DOWN
-                    </span>
                 </div>
             </section>
 

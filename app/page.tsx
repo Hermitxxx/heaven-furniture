@@ -6,8 +6,8 @@ import ZoomInScroll from "@/components/ZoomInScroll";
 export default function HomePage() {
   return (
     <>
+      <AnimeNavBar></AnimeNavBar>
       <HeroScroll></HeroScroll>
-      <AnimeNavBar />
       <ZoomInScroll />
       <CinematicFooter />
     </>
