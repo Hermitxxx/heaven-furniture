@@ -6,6 +6,7 @@ import { ArrowDown, Eye } from "lucide-react"
 import { animate, stagger } from "animejs"
 import Link from "next/link"
 import { AnimeNavBar } from "./Navbar"
+import TextMorph from "./ui/text-morph"
 
 // 1. Mock Products Data
 const MOCK_PRODUCTS = [
@@ -379,7 +380,6 @@ function ProductHero({ product, reversed = false }: { product: typeof MOCK_PRODU
 
 // 4. Main Unified Mock Component
 export function HeroScroll() {
-    const finalTitle = "CLOSET STUDIO"
     const finalSubtitle = "EST. 2024"
     const finalDescription = "We design a timeless lifestyle beyond clothing. Where minimalism meets luxury."
     const finalButtonText = "View Collection"
@@ -481,10 +481,6 @@ export function HeroScroll() {
         }
     }, [])
 
-    const mainTitleParts = finalTitle.split(" ")
-    const mainTitleFirst = mainTitleParts[0]
-    const mainTitleRest = mainTitleParts.slice(1).join(" ")
-
     return (
         <div
             ref={containerRef}
@@ -508,23 +504,19 @@ export function HeroScroll() {
                         </span>
                     </div>
 
-                    <h1 className="text-6xl md:text-[8rem] lg:text-[10rem] font-black leading-[0.85] text-foreground w-full flex flex-col items-center justify-center text-center tracking-tighter">
-                        <div className="overflow-hidden w-full flex justify-center">
-                            <span
-                                className="block reveal text-center"
-                                style={{ animationDelay: "0.4s" }}
-                            >
-                                {mainTitleFirst}
-                            </span>
-                        </div>
-                        <div className="overflow-hidden mt-2 w-full flex justify-center">
-                            <span
-                                className="block italic font-light text-muted-foreground reveal text-center"
-                                style={{ animationDelay: "0.6s" }}
-                            >
-                                {mainTitleRest}
-                            </span>
-                        </div>
+                    <h1 className="text-6xl md:text-[8rem] lg:text-[10rem] font-black leading-[0.85] text-foreground w-full flex items-center justify-center text-center tracking-tighter">
+                        <TextMorph
+                            words={[
+                                "DIVINE ELEGANCE",
+                                "REFINED LUXURY",
+                                "ELEVATED COMFORT",
+                            ]}
+                            interval={2600}
+                            morphDuration={680}
+                            className="font-[Helvetica,Arial,sans-serif] uppercase"
+                            splitLines
+                            secondLineClassName="italic font-light text-muted-foreground"
+                        />
                     </h1>
 
                     <div className="mt-6 md:mt-12 overflow-hidden w-full flex justify-center">
