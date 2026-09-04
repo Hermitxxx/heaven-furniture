@@ -7,7 +7,6 @@ import { animate, stagger } from "animejs"
 import Link from "next/link"
 import TopoField from "./TopoField"
 import ChromeButton from "./ChromeButton"
-import MorphingHeadline, { type HeadlinePhrase } from "./MorphingHeadline"
 import Reveal from "./Reveal"
 import { PHONE_E164 } from "@/lib/contact"
 
@@ -465,21 +464,6 @@ export function CinematicProductScroll() {
     const mainTitleFirst = mainTitleParts[0]
     const mainTitleRest = mainTitleParts.slice(1).join(" ")
 
-    // The brand pair leads, and the rotation returns to it every cycle. The other
-    // three sit in the register the hero's own description sets — "a timeless
-    // lifestyle beyond crafting" — so: personal, made-to-measure, timeless.
-    // "Made to measure" is deliberate: it's the tailoring term for the tier above
-    // ready-made, which is what this workshop actually sells.
-    // Trail lines are kept to ten characters or fewer and leads to eight: at
-    // lg:text-[10rem] anything longer runs past the viewport, and the lead line is
-    // set in font-black, which is wider still.
-    const heroPhrases: HeadlinePhrase[] = [
-        { lead: mainTitleFirst, trail: mainTitleRest },
-        { lead: "DIVINE", trail: "ELEGANCE" },
-        { lead: "REFINED", trail: "LUXURY" },
-        { lead: "ELEVATED", trail: "COMFORT" },
-    ]
-
     return (
         <div
             ref={containerRef}
@@ -532,17 +516,9 @@ export function CinematicProductScroll() {
                     </div>
 
                     <h1 className="text-6xl md:text-[8rem] lg:text-[10rem] font-black leading-[0.85] text-foreground w-full flex flex-col items-center justify-center text-center tracking-tighter">
-                        {/* fade, not mask: the headline underneath is a stack of
-                            absolutely positioned spans behind an SVG threshold
-                            filter, and sliding that whole filtered box would
-                            rasterise it twice over on first paint. */}
                         <Reveal animation="fade" trigger="mount" delay={0.3} duration={0.9} as="span" className="w-full">
-                            <MorphingHeadline
-                                phrases={heroPhrases}
-                                srLabel={finalTitle}
-                                leadClassName="text-center"
-                                trailClassName="italic font-bold text-muted-foreground text-center"
-                            />
+                            <span className="block text-center">{mainTitleFirst}</span>
+                            <span className="block italic font-bold text-muted-foreground text-center">{mainTitleRest}</span>
                         </Reveal>
                     </h1>
 
