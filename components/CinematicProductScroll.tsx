@@ -475,9 +475,9 @@ export function CinematicProductScroll() {
     // set in font-black, which is wider still.
     const heroPhrases: HeadlinePhrase[] = [
         { lead: mainTitleFirst, trail: mainTitleRest },
-        { lead: "CRAFTED", trail: "AROUND YOU" },
-        { lead: "MADE", trail: "TO MEASURE" },
-        { lead: "TIMELESS", trail: "BY DESIGN" },
+        { lead: "DIVINE", trail: "ELEGANCE" },
+        { lead: "REFINED", trail: "LUXURY" },
+        { lead: "ELEVATED", trail: "COMFORT" },
     ]
 
     return (
