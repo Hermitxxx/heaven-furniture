@@ -11,6 +11,7 @@ import { TextAnimate } from "./ui/text-animate"
 import Bed from '../public/products/bed.jpeg'
 import Sofa from '../public/products/sofa.jpeg'
 import Vanity from '../public/products/vanity.jpeg'
+import CTA from "./CTA"
 
 // 1. Mock Products Data
 const MOCK_PRODUCTS = [
@@ -584,9 +585,9 @@ export function HeroScroll() {
                         </AnimatePresence>
                     </h1>
 
-                    <div className="mt-6 md:mt-12 overflow-hidden w-full flex justify-center">
+                    <div className="mt-6 md:mt-12 overflow-hidden w-full flex flex-col items-center gap-8 justify-center">
                         <p
-                            className="text-muted-foreground text-center text-sm md:text-base max-w-lg font-light leading-relaxed tracking-wide"
+                            className="text-muted-foreground text-center text-sm md:text-base max-w-lg font-bold leading-relaxed tracking-wide"
                         >
                             <TextAnimate
                                 as="span"
@@ -599,6 +600,8 @@ export function HeroScroll() {
                                 {finalDescription}
                             </TextAnimate>
                         </p>
+
+                        <CTA></CTA>
                     </div>
                 </div>
             </section>
