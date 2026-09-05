@@ -391,7 +391,7 @@ export function HeroScroll() {
         "REFINED LUXURY",
         "ELEVATED COMFORT",
     ]
-    const finalSubtitle = "EST. 2024"
+    const finalSubtitle = "EST. 2020"
     const finalDescription = "We design a timeless lifestyle beyond clothing. Where minimalism meets luxury."
     const finalButtonText = "View Collection"
 
